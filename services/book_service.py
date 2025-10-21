@@ -1,22 +1,30 @@
 import requests
-from services.validation_service import ValidationService
+from exceptions.custom_exceptions import BadRequestException
+
 
 class BookService:
     GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes"
 
     @staticmethod
     def search_books(query):
-        ValidationService.validate_search_query(query)
-        params = {"q": query, "maxResults": 10}
-        response = requests.get(BookService.GOOGLE_BOOKS_API_URL, params=params)
+        if not query or not query.strip():
+            raise BadRequestException("O parâmetro 'q' é obrigatório e não pode estar vazio.")
+
+        response = requests.get(
+            BookService.GOOGLE_BOOKS_API_URL,
+            params={"q": query, "maxResults": 10}
+        )
+
         if response.status_code != 200:
             raise Exception("Erro ao consultar a API do Google Books.")
+
         data = response.json()
         books = []
+
         for item in data.get("items", []):
             volume_info = item.get("volumeInfo", {})
-            industry_identifiers = volume_info.get("industryIdentifiers", [])
             image_links = volume_info.get("imageLinks", {})
+
             books.append({
                 "id": item.get("id", ""),
                 "title": volume_info.get("title", "Título não disponível"),
@@ -40,6 +48,7 @@ class BookService:
                     "large": image_links.get("large", ""),
                     "extraLarge": image_links.get("extraLarge", "")
                 },
-                "industryIdentifiers": industry_identifiers
+                "industryIdentifiers": volume_info.get("industryIdentifiers", [])
             })
+
         return books

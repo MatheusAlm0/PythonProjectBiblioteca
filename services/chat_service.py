@@ -2,19 +2,17 @@ import os
 import requests
 from exceptions.custom_exceptions import (
     BadRequestException,
-    PaymentRequiredException,
     UnauthorizedException,
     RateLimitException
 )
-from services.validation_service import ValidationService
-
 
 class ChatService:
     GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
     @staticmethod
     def ask(message, api_key=None, model=None, hf_token=None, hf_model=None, **kwargs):
-        ValidationService.validate_chat_message(message)
+        if not message or not str(message).strip():
+            raise BadRequestException("O campo 'message' é obrigatório e não pode estar vazio.")
 
         groq_key = api_key or os.environ.get('GROQ_API_KEY')
         if not groq_key:
