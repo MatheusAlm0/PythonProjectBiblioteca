@@ -1,0 +1,26 @@
+{
+  "user_b49cda7a": {
+    "password": "scrypt:32768:8:1$jZp5WqX8cwuScdBe$b2bc06452a1c975e69de1a9639cf93ddd7f9339800989cac30bb4d16474af39440f800c5b8b934b6556d9bea0a000ff135ca84d7d8f9b167a523e84cabf890e5"
+  },
+  "user_34ecb571": {
+    "password": "scrypt:32768:8:1$IuGSKWRWIBO1QwR8$e51b97055d712eeb5da314f07adc27cac36bb8cf0dbdd369985e4cf67f3b03cf8c7928d96ce2961c490de375b834e538f8f2caa6917195c47334af011ace30ca"
+  },
+  "teste": {
+    "password": "scrypt:32768:8:1$6RJbyXKFBeM8cbxl$eacc7aa5a5d32ad6f3817055d546301698cbc93366e1d5e70dc432ebb11ad93f668d206bede9b161116bcdd26307cddaca414c603e88f7c38e5499749277ddfe"
+  },
+  "teste1": {
+    "password": "scrypt:32768:8:1$Rn1PVlnuwjzhvpSE$541478a1684445b822a953e11329f0816d293bea8fd264386c86ca144a35542fdb45a017435dbebbfef84911d72e82252d6dbe74a31899e5046177b52a2e494b"
+  },
+  "user_a4b84405": {
+    "password": "scrypt:32768:8:1$DNO1MZyiYDZAU4Cm$5e0829bc91c62c2af418c3ca44ad4e7b382afd32ad5deffe5c11f313c7aa7d818dd2036f1fe5c449560af7cf81388e08af478c96a76d06fef1d9ffac4fc1e832"
+  },
+  "teste2": {
+    "password": "scrypt:32768:8:1$b35JHwPtU01FImrM$6c04cfbcb9815a15b9b943a98e10713ea5e3b7ec04669a9523611928757294916a875941d5a410f865e10fdb83db2da9f0d45104b50ab3d10183d1be26ec72eb"
+  },
+  "teste3": {
+    "password": "scrypt:32768:8:1$eIekjZL0cF9Ykru2$aefe3361174f4bc2f46f6459172eee7fa5779260d92ad2eb7d761e8b2e3e8ac48026d4cd2ba04c9e99a93ca55d2323d9d1adf5546d7eae9f10c3263db48a3b4b"
+  },
+  "meuUsuario": {
+    "password": "scrypt:32768:8:1$OWIAJexRG1cZ6NLO$07489dc0c56e77129ad070ff48e42d872420ae1edef86379520fdd6011f996c84df3aee02a2882114619595ee7ec9faaa46ceee58ee0d5ffd7f4369debe2d87e"
+  }
+}
