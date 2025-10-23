@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login - Biblioteca</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <main class="auth-page">
+    <section class="hero">
+      <div class="hero-inner">
+        <img src="/static/img/logo.png" alt="Biblioteca" class="logo" onerror="this.style.display='none'">
+        <h1>Biblioteca</h1>
+        <p class="lead"></p>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" data-target="#login-form">Entrar</button>
+          <button class="tab" data-target="#register-form">Registrar</button>
+        </div>
+
+        <div class="forms">
+          <form id="login-form" class="form active" onsubmit="event.preventDefault()">
+            <label for="login-username">Usuário</label>
+            <input id="login-username" placeholder="usuário" autocomplete="username">
+
+            <label for="login-password">Senha</label>
+            <input id="login-password" type="password" placeholder="Senha" autocomplete="current-password">
+
+            <div class="form-actions">
+              <button id="btn-login" class="btn primary">Entrar</button>
+            </div>
+            <div id="login-result" class="result"></div>
+          </form>
+
+          <form id="register-form" class="form" onsubmit="event.preventDefault()">
+            <label for="reg-username">Usuário</label>
+            <input id="reg-username" placeholder="usuário" autocomplete="username">
+
+            <label for="reg-password">Senha</label>
+            <input id="reg-password" type="password" placeholder="senha" autocomplete="new-password">
+
+            <div class="form-actions">
+              <button id="btn-register" class="btn secondary">Criar conta</button>
+            </div>
+            <div id="reg-result" class="result"></div>
+          </form>
+        </div>
+
+        <div class="card-footer">
+          <small>Suporte: suporte@biblioteca.local</small>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Simple tab handling - keeps the existing element ids intact
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const tabs = document.querySelectorAll('.tab');
+      const forms = document.querySelectorAll('.form');
+      tabs.forEach(tab=>{
+        tab.addEventListener('click', ()=>{
+          tabs.forEach(t=>t.classList.remove('active'));
+          tab.classList.add('active');
+          const target = document.querySelector(tab.dataset.target);
+          forms.forEach(f=>f.classList.remove('active'));
+          target.classList.add('active');
+        });
+      });
+    });
+  </script>
+
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>
