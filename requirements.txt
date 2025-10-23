@@ -4,3 +4,8 @@ transformers
 torch
 itsdangerous
 flask-cors
+
+# Database dependencies
+SQLAlchemy>=2.0
+PyMySQL>=1.0.2
+python-dotenv>=1.0.0

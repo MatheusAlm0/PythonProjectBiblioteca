@@ -22,5 +22,8 @@
   },
   "meuUsuario": {
     "password": "scrypt:32768:8:1$OWIAJexRG1cZ6NLO$07489dc0c56e77129ad070ff48e42d872420ae1edef86379520fdd6011f996c84df3aee02a2882114619595ee7ec9faaa46ceee58ee0d5ffd7f4369debe2d87e"
+  },
+  "UsuarioTeste": {
+    "password": "scrypt:32768:8:1$65tzmVChIxeufLEj$8fed2a86933087c63bfe46b17347a1605cd329f26281d3853c686e6867bd4bda9c51faf2d939377273b9a71f29791767b90f6d1e2c2016f09ab3acbab871ce7c"
   }
 }
