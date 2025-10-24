@@ -5,7 +5,5 @@ torch
 itsdangerous
 flask-cors
 
-# Database dependencies
+# Database - SQLite (sem dependências externas!)
 SQLAlchemy>=2.0
-PyMySQL>=1.0.2
-python-dotenv>=1.0.0
