@@ -26,8 +26,8 @@
 
         <div class="forms">
           <form id="login-form" class="form active" onsubmit="event.preventDefault()">
-            <label for="login-username">Usuário</label>
-            <input id="login-username" placeholder="usuário" autocomplete="username">
+            <label for="login-username">Usuário ou Email</label>
+            <input id="login-username" placeholder="usuário ou email" autocomplete="username">
 
             <label for="login-password">Senha</label>
             <input id="login-password" type="password" placeholder="Senha" autocomplete="current-password">
@@ -41,6 +41,9 @@
           <form id="register-form" class="form" onsubmit="event.preventDefault()">
             <label for="reg-username">Usuário</label>
             <input id="reg-username" placeholder="usuário" autocomplete="username">
+
+            <label for="reg-email">Email</label>
+            <input id="reg-email" type="email" placeholder="email@exemplo.com" autocomplete="email">
 
             <label for="reg-password">Senha</label>
             <input id="reg-password" type="password" placeholder="senha" autocomplete="new-password">

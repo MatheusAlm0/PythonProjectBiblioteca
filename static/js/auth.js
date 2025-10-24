@@ -33,15 +33,25 @@ function validatePassword(password){
   return null;
 }
 
+function validateEmail(email){
+  if(!email || email.trim().length === 0) return 'Informe o email.';
+  // simples validação
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return 'Email inválido.';
+  return null;
+}
+
 // Register
 q('btn-register').addEventListener('click', async ()=>{
   const username = q('reg-username').value.trim();
+  const email = q('reg-email').value.trim();
   const password = q('reg-password').value;
   setResult('reg-result', '', null);
 
   const uErr = validateUsername(username);
   const pErr = validatePassword(password);
+  const eErr = validateEmail(email);
   if(uErr){ setResult('reg-result', uErr, 'error'); return }
+  if(eErr){ setResult('reg-result', eErr, 'error'); return }
   if(pErr){ setResult('reg-result', pErr, 'error'); return }
 
   const btn = q('btn-register');
@@ -50,7 +60,7 @@ q('btn-register').addEventListener('click', async ()=>{
     const res = await fetch('/auth/register', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password})
+      body: JSON.stringify({username, password, email})
     });
     const data = await res.json();
     if(res.status === 201){
@@ -95,13 +105,12 @@ q('btn-register').addEventListener('click', async ()=>{
 
 // Login
 q('btn-login').addEventListener('click', async ()=>{
-  const username = q('login-username').value.trim();
+  const usernameOrEmail = q('login-username').value.trim();
   const password = q('login-password').value;
   setResult('login-result', '', null);
 
-  const uErr = validateUsername(username);
+  // Não validar formato de usuário/ email aqui rigidamente; backend decide
   const pErr = validatePassword(password);
-  if(uErr){ setResult('login-result', uErr, 'error'); return }
   if(pErr){ setResult('login-result', pErr, 'error'); return }
 
   const btn = q('btn-login');
@@ -110,7 +119,7 @@ q('btn-login').addEventListener('click', async ()=>{
     const res = await fetch('/auth/login', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password})
+      body: JSON.stringify({username: usernameOrEmail, password})
     });
     const data = await res.json();
     if(res.ok && data.token){
@@ -124,7 +133,7 @@ q('btn-login').addEventListener('click', async ()=>{
       // manter alerta para erros de autenticação do servidor (visibilidade)
       alert(msg);
     }
-  }catch(e){ setResult('login-result', 'Erro ao conectar: '+e.message, 'error'); alert('Erro ao conectar: '+e.message) }
+  }catch(e){setResult('login-result', 'Erro ao conectar: '+e.message, 'error'); alert('Erro ao conectar: '+e.message)}
   finally{ setButtonState(btn, false); }
 });
 
