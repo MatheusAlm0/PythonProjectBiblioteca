@@ -7,20 +7,17 @@ class FavoriteService:
 
     @staticmethod
     def add_favorite(user_id, book_id):
-        """Adiciona um ou mais livros aos favoritos do usuário"""
         if not user_id or not user_id.strip():
             raise BadRequestException("O ID do usuário é obrigatório.")
 
         if not book_id or not book_id.strip():
             raise BadRequestException("O ID do livro é obrigatório.")
 
-        # Se book_id contém vírgulas, trata como múltiplos IDs
         if ',' in book_id:
             book_ids = [bid.strip() for bid in book_id.split(',') if bid.strip()]
         else:
             book_ids = [book_id]
 
-        # Verifica duplicatas na entrada
         unique_book_ids = list(set(book_ids))
         if len(unique_book_ids) < len(book_ids):
             duplicates = [bid for bid in book_ids if book_ids.count(bid) > 1]
@@ -33,19 +30,15 @@ class FavoriteService:
             if not user:
                 raise BadRequestException("Usuário não encontrado.")
 
-            # Inicializa lista se for None
             if user.favorite_books is None:
                 user.favorite_books = []
 
-            # Verifica se algum livro já está nos favoritos
             already_in = [bid for bid in unique_book_ids if bid in user.favorite_books]
             if already_in:
                 raise BadRequestException(f"Livros já nos favoritos: {', '.join(already_in)}")
 
-            # Adiciona os livros
             user.favorite_books.extend(unique_book_ids)
 
-            # Marca a coluna como modificada (necessário para JSON no PostgreSQL)
             flag_modified(user, "favorite_books")
             session.commit()
 
@@ -62,7 +55,6 @@ class FavoriteService:
 
     @staticmethod
     def remove_favorite(user_id, book_id):
-        """Remove um livro dos favoritos do usuário"""
         if not user_id or not user_id.strip():
             raise BadRequestException("O ID do usuário é obrigatório.")
 
@@ -79,10 +71,8 @@ class FavoriteService:
             if user.favorite_books is None or book_id not in user.favorite_books:
                 raise BadRequestException("Livro não encontrado nos favoritos.")
 
-            # Remove o livro dos favoritos
             user.favorite_books.remove(book_id)
 
-            # Marca a coluna como modificada
             flag_modified(user, "favorite_books")
 
             session.commit()
@@ -100,7 +90,6 @@ class FavoriteService:
 
     @staticmethod
     def get_favorites(user_id):
-        """Retorna todos os IDs dos livros favoritos do usuário"""
         if not user_id or not user_id.strip():
             raise BadRequestException("O ID do usuário é obrigatório.")
 
@@ -120,7 +109,6 @@ class FavoriteService:
 
     @staticmethod
     def is_favorite(user_id, book_id):
-        """Verifica se um livro está nos favoritos do usuário"""
         if not user_id or not user_id.strip():
             raise BadRequestException("O ID do usuário é obrigatório.")
 
