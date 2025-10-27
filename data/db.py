@@ -23,13 +23,11 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     try:
-        # Lista de usuários padrão
         usuarios_padrao = [
             {'username': 'Teste', 'email': 'teste@local.com', 'password': 'senha123'},
             {'username': 'Matheus', 'email': 'matheus@gmail.com', 'password': 'senha123'}
         ]
 
-        # Cria apenas se não existir
         for user_data in usuarios_padrao:
             if not session.query(User).filter_by(username=user_data['username']).first():
                 session.add(User(**user_data))
