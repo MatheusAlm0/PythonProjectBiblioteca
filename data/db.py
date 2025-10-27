@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, String, TIMESTAMP, text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker
 import uuid
 
@@ -16,6 +16,7 @@ class User(Base):
     username = Column(String(150), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
+    favorite_books = Column(JSON, default=list)
     created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
 
 
@@ -24,8 +25,26 @@ def init_db():
     session = SessionLocal()
     try:
         usuarios_padrao = [
-            {'username': 'Teste', 'email': 'teste@local.com', 'password': 'senha123'},
-            {'username': 'Matheus', 'email': 'matheus@gmail.com', 'password': 'senha123'}
+            {
+                'username': 'Teste',
+                'email': 'teste@local.com',
+                'password': 'senha123',
+                'favorite_books': [
+                    'zyTCAlFPjgYC',
+                    'wrOQLV6xB-wC',
+                    'nggnmAEACAAJ'
+                ]
+            },
+            {
+                'username': 'Matheus',
+                'email': 'matheus@gmail.com',
+                'password': 'senha123',
+                'favorite_books': [
+                    'PXa2bby0oQ0C',
+                    'IwywDwAAQBAJ',
+                    '1wy49d1FmLcC'
+                ]
+            }
         ]
 
         for user_data in usuarios_padrao:
