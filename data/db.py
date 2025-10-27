@@ -1,17 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, TIMESTAMP, text
 from sqlalchemy.orm import declarative_base, sessionmaker
-import os
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'biblioteca.db')
-DATABASE_URL = f"sqlite:///{DB_PATH}"
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/biblioteca"
 
-engine = create_engine(
-    DATABASE_URL,
-    echo=False,
-    connect_args={'check_same_thread': False}
-)
-
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
 class User(Base):
@@ -33,12 +26,3 @@ def init_db():
         session.commit()
     finally:
         session.close()
-
-if __name__ == '__main__':
-    try:
-        with engine.connect() as conn:
-            print("Conexão com SQLite OK!")
-        init_db()
-        print("Banco inicializado com sucesso!")
-    except Exception as e:
-        print(f"Erro: {e}")
