@@ -7,12 +7,24 @@ class FavoriteService:
 
     @staticmethod
     def add_favorite(user_id, book_id):
-        """Adiciona um livro aos favoritos do usuário"""
+        """Adiciona um ou mais livros aos favoritos do usuário"""
         if not user_id or not user_id.strip():
             raise BadRequestException("O ID do usuário é obrigatório.")
 
         if not book_id or not book_id.strip():
             raise BadRequestException("O ID do livro é obrigatório.")
+
+        # Se book_id contém vírgulas, trata como múltiplos IDs
+        if ',' in book_id:
+            book_ids = [bid.strip() for bid in book_id.split(',') if bid.strip()]
+        else:
+            book_ids = [book_id]
+
+        # Verifica duplicatas na entrada
+        unique_book_ids = list(set(book_ids))
+        if len(unique_book_ids) < len(book_ids):
+            duplicates = [bid for bid in book_ids if book_ids.count(bid) > 1]
+            raise BadRequestException(f"IDs duplicados no request: {', '.join(set(duplicates))}")
 
         session = SessionLocal()
         try:
@@ -25,24 +37,20 @@ class FavoriteService:
             if user.favorite_books is None:
                 user.favorite_books = []
 
-            # Verifica se o livro já está nos favoritos
-            if book_id in user.favorite_books:
-                return {
-                    "message": "Livro já está nos favoritos.",
-                    "favorite_books": user.favorite_books
-                }
+            # Verifica se algum livro já está nos favoritos
+            already_in = [bid for bid in unique_book_ids if bid in user.favorite_books]
+            if already_in:
+                raise BadRequestException(f"Livros já nos favoritos: {', '.join(already_in)}")
 
-            # Adiciona o livro aos favoritos
-            user.favorite_books.append(book_id)
+            # Adiciona os livros
+            user.favorite_books.extend(unique_book_ids)
 
             # Marca a coluna como modificada (necessário para JSON no PostgreSQL)
             flag_modified(user, "favorite_books")
-
             session.commit()
 
             return {
-                "message": "Livro adicionado aos favoritos com sucesso!",
-                "favorite_books": user.favorite_books
+                "message": f"Livros adicionados com sucesso: {', '.join(unique_book_ids)}"
             }
         except BadRequestException:
             raise
@@ -80,8 +88,7 @@ class FavoriteService:
             session.commit()
 
             return {
-                "message": "Livro removido dos favoritos com sucesso!",
-                "favorite_books": user.favorite_books
+                "message": "Livro removido dos favoritos com sucesso!"
             }
         except BadRequestException:
             raise
@@ -105,10 +112,8 @@ class FavoriteService:
                 raise BadRequestException("Usuário não encontrado.")
 
             return {
-                "user_id": str(user.id),
-                "username": user.username,
-                "favorite_books": user.favorite_books or [],
-                "total": len(user.favorite_books or [])
+                "total": len(user.favorite_books or []),
+                "favorite_books": user.favorite_books or []
             }
         finally:
             session.close()
