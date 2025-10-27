@@ -29,7 +29,7 @@ def login():
     token = authenticate_user(username_or_email, password)
     if not token:
         return jsonify({'error': 'credenciais inválidas'}), 401
-    return jsonify({'token': token}), 200
+    return jsonify({'message': 'usuário logado'}), 200
 
 
 @auth_bp.route('/me', methods=['GET'])

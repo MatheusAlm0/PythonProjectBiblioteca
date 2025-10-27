@@ -5,5 +5,4 @@ torch
 itsdangerous
 flask-cors
 
-# Database - SQLite (sem dependências externas!)
 SQLAlchemy>=2.0
