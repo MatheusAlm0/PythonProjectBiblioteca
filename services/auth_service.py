@@ -14,12 +14,11 @@ def register_user(username: str, password: str, email: str):
     try:
         existing = session.query(User).filter((User.username == username) | (User.email == email)).first()
         if existing:
-            # determinar se o conflito é por username ou email
             if existing.username == username:
                 raise ValueError('usuario já existe')
             else:
                 raise ValueError('email já cadastrado')
-        new_user = User(username=username, email=email, password=password)  # senha em texto simples (refatorar para hash se desejar)
+        new_user = User(username=username, email=email, password=password)
         session.add(new_user)
         session.commit()
         return True
@@ -30,7 +29,6 @@ def register_user(username: str, password: str, email: str):
 def authenticate_user(username_or_email: str, password: str, expires_sec: int = 3600):
     session = SessionLocal()
     try:
-        # permitir login por username ou email
         user = session.query(User).filter((User.username == username_or_email) | (User.email == username_or_email)).first()
         if not user or user.password != password:
             return None
