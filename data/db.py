@@ -1,5 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String, TIMESTAMP, text
+from sqlalchemy import create_engine, Column, String, TIMESTAMP, text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, sessionmaker
+import uuid
 
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/biblioteca"
 
@@ -7,22 +9,34 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String(150), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
 
+
 def init_db():
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     try:
-        if not session.query(User).filter_by(username='teste').first():
-            session.add(User(username='teste', email='teste@local', password='senha123'))
-        if not session.query(User).filter_by(username='meuUsuario').first():
-            session.add(User(username='meuUsuario', email='meuUsuario@local', password='senha123'))
+        # Lista de usuários padrão
+        usuarios_padrao = [
+            {'username': 'Teste', 'email': 'teste@local.com', 'password': 'senha123'},
+            {'username': 'Matheus', 'email': 'matheus@gmail.com', 'password': 'senha123'}
+        ]
+
+        # Cria apenas se não existir
+        for user_data in usuarios_padrao:
+            if not session.query(User).filter_by(username=user_data['username']).first():
+                session.add(User(**user_data))
+
         session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Erro ao inicializar usuários: {e}")
     finally:
         session.close()
