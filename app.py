@@ -13,6 +13,7 @@ from controllers.book_controller import book_bp
 from controllers.chat_controller import chat_bp
 from controllers.auth_controller import auth_bp
 from controllers.favorite_controller import favorite_bp
+from controllers.rating_controller import rating_bp
 from data.db import init_db
 
 app = Flask(__name__)
@@ -27,7 +28,7 @@ app.register_blueprint(book_bp)
 app.register_blueprint(chat_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(favorite_bp)
-
+app.register_blueprint(rating_bp)
 
 @app.route('/')
 def index():
