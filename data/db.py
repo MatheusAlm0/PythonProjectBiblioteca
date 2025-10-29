@@ -1,9 +1,10 @@
-from sqlalchemy import create_engine, Column, String, TIMESTAMP, text
+from sqlalchemy import create_engine, Column, String, TIMESTAMP, text, Text,Integer, UniqueConstraint, CheckConstraint,ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSON
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker,relationship
 import uuid
 
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/biblioteca"
+#DATABASE_URL =  "sqlite:///./biblioteca.db"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
@@ -18,6 +19,49 @@ class User(Base):
     password = Column(String(255), nullable=False)
     favorite_books = Column(JSON, default=list)
     created_at = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    
+    avaliacoes = relationship('Avaliacao', back_populates='usuario', cascade='all, delete-orphan')
+
+class Livro(Base):
+    __tablename__ = 'livros'
+    
+    id = Column(Integer, primary_key=True)
+    google_books_id = Column(String(50), unique=True, nullable=False, index=True)
+    rate = Column(Integer,nullable=False,index=True)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    # Relacionamento com avaliações
+    
+    
+    avaliacoes = relationship('Avaliacao', back_populates='livro', cascade='all, delete-orphan')
+
+
+class Avaliacao(Base):
+    __tablename__ = 'avaliacoes'
+    __table_args__ = (
+        UniqueConstraint('livro_id', 'usuario_id', name='uq_livro_usuario'),
+        CheckConstraint('estrelas >= 1 AND estrelas <= 5', name='ck_estrelas_range')
+    )
+    
+    id = Column(Integer, primary_key=True)
+    livro_id = Column(Integer, ForeignKey('livros.id'), nullable=False, index=True)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False, index=True)
+    estrelas = Column(Integer, nullable=False)
+    comentario = Column(Text)
+    data_avaliacao = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))
+    
+    # Relacionamentos
+    livro = relationship('Livro', back_populates='avaliacoes')
+    usuario = relationship('User', back_populates='avaliacoes')
+
+
+
+
+#def get_db_session():
+    #return SessionLocal()
+
+
+
+
 
 
 def init_db():
