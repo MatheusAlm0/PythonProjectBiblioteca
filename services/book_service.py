@@ -1,16 +1,17 @@
 import requests
 from exceptions.custom_exceptions import BadRequestException
+from data.db import SessionLocal, Avaliacao, User
 
 
 class BookService:
     GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes"
 
     @staticmethod
-    def _format_book(item):
+    def _format_book(item, include_avaliacoes=False, book_id=None):
         volume_info = item.get("volumeInfo", {})
         image_links = volume_info.get("imageLinks", {})
 
-        return {
+        book_data = {
             "id": item.get("id", ""),
             "title": volume_info.get("title", "Título não disponível"),
             "subtitle": volume_info.get("subtitle", ""),
@@ -35,6 +36,31 @@ class BookService:
             },
             "industryIdentifiers": volume_info.get("industryIdentifiers", [])
         }
+
+        return book_data
+
+    @staticmethod
+    def _get_avaliacoes(google_books_id):
+        """Busca avaliações do livro no banco de dados"""
+        session = SessionLocal()
+        try:
+            avaliacoes = session.query(Avaliacao).join(User).filter(
+                Avaliacao.google_books_id == google_books_id
+            ).order_by(Avaliacao.data_avaliacao.desc()).all()
+
+            return [{
+                'id': str(av.id),
+                'usuario_id': str(av.usuario_id),
+                'usuario_nome': av.usuario.username,
+                'estrelas': av.estrelas,
+                'comentario': av.comentario,
+                'data_avaliacao': av.data_avaliacao.isoformat() if av.data_avaliacao else None
+            } for av in avaliacoes]
+        except Exception as e:
+            print(f"Erro ao buscar avaliações: {e}")
+            return []
+        finally:
+            session.close()
 
     @staticmethod
     def search_books(query):
@@ -64,4 +90,14 @@ class BookService:
         if response.status_code != 200:
             raise Exception("Erro ao consultar a API do Google Books.")
 
-        return [BookService._format_book(response.json())]
+        # Formatar dados do livro (sem avaliações)
+        book_data = BookService._format_book(response.json())
+
+        # Buscar avaliações separadamente
+        avaliacoes = BookService._get_avaliacoes(book_id)
+
+        # Retornar livro e avaliações separados
+        return {
+            "book": book_data,
+            "avaliacoes": avaliacoes
+        }
