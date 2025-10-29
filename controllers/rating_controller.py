@@ -29,30 +29,28 @@ def check_logged_in(user_id):
     return None
 
 
-@rating_bp.route('/api/ratings', methods=['POST'])
-def adicionar_avaliacao():
+@rating_bp.route('/api/users/<user_id>/ratings', methods=['POST'])
+def adicionar_avaliacao(user_id):
     """
     Adiciona uma avaliação (requer estar logado)
     Body: {
-        "user_id": "32a332b3-5a60-40e8-8b8c-61518f9de5b0",
         "google_books_id": "n3vng7gyGCYC",
         "estrelas": 5,
         "comentario": "Excelente!"
     }
     """
+    # Verificar se está logado
+    auth_error = check_logged_in(user_id)
+    if auth_error:
+        return auth_error
+
     service = get_rating_service()
     try:
         body = request.get_json() or {}
 
-        user_id = body.get('user_id')
         google_books_id = body.get('google_books_id')
         estrelas = body.get('estrelas')
         comentario = body.get('comentario')
-
-        # Verificar se está logado
-        auth_error = check_logged_in(user_id)
-        if auth_error:
-            return auth_error
 
         # Validações
         if not google_books_id:
@@ -69,10 +67,7 @@ def adicionar_avaliacao():
             comentario=comentario
         )
 
-        return jsonify({
-            "success": True,
-            "message": resultado['message']
-        }), 201
+        return jsonify({"message": resultado['message']}), 201
 
     except BadRequestException as e:
         return jsonify({"error": e.message}), 400
