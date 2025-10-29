@@ -7,13 +7,11 @@ rating_bp = Blueprint('rating_bp', __name__)
 
 
 def get_rating_service():
-    """Helper para criar service com sessão do banco"""
     from services.rating_service import RatingService
     return RatingService(SessionLocal())
 
 
 def check_logged_in(user_id):
-    """Verifica se o usuário está logado (igual ao favorite_controller)"""
     if not user_id:
         return jsonify({
             'error': 'user_id é obrigatório',
@@ -31,15 +29,6 @@ def check_logged_in(user_id):
 
 @rating_bp.route('/api/users/<user_id>/ratings', methods=['POST'])
 def adicionar_avaliacao(user_id):
-    """
-    Adiciona uma avaliação (requer estar logado)
-    Body: {
-        "google_books_id": "n3vng7gyGCYC",
-        "estrelas": 5,
-        "comentario": "Excelente!"
-    }
-    """
-    # Verificar se está logado
     auth_error = check_logged_in(user_id)
     if auth_error:
         return auth_error
@@ -52,7 +41,6 @@ def adicionar_avaliacao(user_id):
         estrelas = body.get('estrelas')
         comentario = body.get('comentario')
 
-        # Validações
         if not google_books_id:
             raise BadRequestException("O campo 'google_books_id' é obrigatório.")
 
@@ -81,15 +69,10 @@ def adicionar_avaliacao(user_id):
 
 @rating_bp.route('/api/ratings/<google_books_id>', methods=['DELETE'])
 def remover_avaliacao(google_books_id):
-    """
-    Remove uma avaliação (requer estar logado)
-    Query param: user_id
-    """
     service = get_rating_service()
     try:
         user_id = request.args.get('user_id')
 
-        # Verificar se está logado
         auth_error = check_logged_in(user_id)
         if auth_error:
             return auth_error
@@ -117,7 +100,6 @@ def remover_avaliacao(google_books_id):
 
 @rating_bp.route('/api/ratings/<google_books_id>/stats', methods=['GET'])
 def obter_estatisticas(google_books_id):
-    """Retorna estatísticas de avaliações (não requer login)"""
     service = get_rating_service()
     try:
         stats = service.obter_estatisticas(google_books_id)
@@ -137,7 +119,6 @@ def obter_estatisticas(google_books_id):
 
 @rating_bp.route('/api/ratings/<google_books_id>', methods=['GET'])
 def listar_avaliacoes(google_books_id):
-    """Lista avaliações de um livro (não requer login)"""
     service = get_rating_service()
     try:
         limite = request.args.get('limite', 10, type=int)
@@ -158,15 +139,10 @@ def listar_avaliacoes(google_books_id):
 
 @rating_bp.route('/api/ratings/<google_books_id>/check', methods=['GET'])
 def verificar_avaliacao(google_books_id):
-    """
-    Verifica se usuário já avaliou (requer estar logado)
-    Query param: user_id
-    """
     service = get_rating_service()
     try:
         user_id = request.args.get('user_id')
 
-        # Verificar se está logado
         auth_error = check_logged_in(user_id)
         if auth_error:
             return auth_error

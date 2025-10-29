@@ -46,7 +46,6 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    """Login - retorna user_id e MARCA como logado"""
     data = request.get_json() or {}
     username_or_email = data.get('username') or data.get('email') or data.get('login')
     password = data.get('password')
@@ -65,7 +64,6 @@ def login():
 
         user_id = str(user.id)
 
-        # 🔥 MARCA COMO LOGADO NO SERVIDOR
         login_user(user_id)
 
         return jsonify({
@@ -81,7 +79,6 @@ def login():
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    """Logout - desmarca como logado"""
     data = request.get_json() or {}
     user_id = data.get('user_id')
 
@@ -95,7 +92,6 @@ def logout():
 
 @auth_bp.route('/status', methods=['GET'])
 def status():
-    """Endpoint para debug - ver quem está logado"""
     return jsonify({
         'logged_users': get_logged_users(),
         'total': len(get_logged_users())

@@ -8,28 +8,14 @@ from exceptions.custom_exceptions import BadRequestException
 class RatingService:
 
     def __init__(self, db_session: Session):
-        """
-        Args:
-            db_session: Sessão do SQLAlchemy
-        """
         self.db = db_session
 
     @staticmethod
     def _validar_estrelas(estrelas: int) -> bool:
-        """Valida se estrelas está entre 1 e 5"""
         return isinstance(estrelas, int) and 1 <= estrelas <= 5
 
     def adicionar_avaliacao(self, google_books_id: str, usuario_id: str,
                             estrelas: int, comentario: Optional[str] = None) -> Dict:
-        """
-        Adiciona ou atualiza uma avaliação
-        Args:
-            google_books_id: ID do livro no Google Books
-            usuario_id: ID do usuário (UUID string)
-            estrelas: Nota de 1 a 5
-            comentario: Comentário opcional
-        Returns: Dict com mensagem de sucesso
-        """
         if not self._validar_estrelas(estrelas):
             raise ValueError("Estrelas deve ser um número entre 1 e 5")
 
@@ -37,24 +23,20 @@ class RatingService:
             raise BadRequestException("O ID do livro é obrigatório.")
 
         try:
-            # Verificar se usuário existe
             usuario = self.db.query(User).filter_by(id=usuario_id).first()
             if not usuario:
                 raise BadRequestException("Usuário não encontrado.")
 
-            # Verificar se já existe avaliação
             avaliacao_existente = self.db.query(Avaliacao).filter_by(
                 google_books_id=google_books_id,
                 usuario_id=usuario_id
             ).first()
 
             if avaliacao_existente:
-                # Atualizar avaliação existente
                 avaliacao_existente.estrelas = estrelas
                 avaliacao_existente.comentario = comentario
                 mensagem = "Avaliação atualizada com sucesso!"
             else:
-                # Criar nova avaliação
                 nova_avaliacao = Avaliacao(
                     google_books_id=google_books_id,
                     usuario_id=usuario_id,
@@ -76,13 +58,6 @@ class RatingService:
             raise Exception(f"Erro ao adicionar avaliação: {str(e)}")
 
     def remover_avaliacao(self, google_books_id: str, usuario_id: str) -> bool:
-        """
-        Remove uma avaliação
-        Args:
-            google_books_id: ID do livro no Google Books
-            usuario_id: ID do usuário (UUID string)
-        Returns: True se removeu, False se não encontrou
-        """
         try:
             avaliacao = self.db.query(Avaliacao).filter_by(
                 google_books_id=google_books_id,
@@ -101,14 +76,7 @@ class RatingService:
             raise Exception(f"Erro ao remover avaliação: {str(e)}")
 
     def obter_estatisticas(self, google_books_id: str) -> Optional[Dict]:
-        """
-        Retorna estatísticas de avaliações de um livro
-        Args:
-            google_books_id: ID do livro no Google Books
-        Returns: Dict com média, total e distribuição ou None se não houver avaliações
-        """
         try:
-            # Calcular média e total
             stats = self.db.query(
                 func.avg(Avaliacao.estrelas).label('media'),
                 func.count(Avaliacao.id).label('total')
@@ -117,7 +85,6 @@ class RatingService:
             if stats.total == 0:
                 return None
 
-            # Distribuição por estrelas
             distribuicao_query = self.db.query(
                 Avaliacao.estrelas,
                 func.count(Avaliacao.id).label('quantidade')
@@ -143,13 +110,6 @@ class RatingService:
             raise Exception(f"Erro ao obter estatísticas: {str(e)}")
 
     def obter_avaliacoes(self, google_books_id: str, limite: int = 10) -> List[Dict]:
-        """
-        Lista as avaliações mais recentes de um livro
-        Args:
-            google_books_id: ID do livro no Google Books
-            limite: Quantidade máxima de avaliações
-        Returns: Lista de dicionários com as avaliações
-        """
         try:
             avaliacoes = self.db.query(Avaliacao).join(User).filter(
                 Avaliacao.google_books_id == google_books_id
@@ -168,13 +128,6 @@ class RatingService:
             raise Exception(f"Erro ao obter avaliações: {str(e)}")
 
     def usuario_ja_avaliou(self, google_books_id: str, usuario_id: str) -> Dict:
-        """
-        Verifica se usuário já avaliou o livro e retorna a avaliação se existir
-        Args:
-            google_books_id: ID do livro no Google Books
-            usuario_id: ID do usuário (UUID string)
-        Returns: Dict com ja_avaliou (bool) e avaliacao (dict) se existir
-        """
         try:
             avaliacao = self.db.query(Avaliacao).filter_by(
                 google_books_id=google_books_id,

@@ -37,7 +37,6 @@ class Avaliacao(Base):
     data_avaliacao = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
     usuario_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False, index=True)
 
-    # Relacionamento
     usuario = relationship('User', back_populates='avaliacoes')
 
 
