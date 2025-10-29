@@ -41,7 +41,6 @@ class BookService:
 
     @staticmethod
     def _get_avaliacoes(google_books_id):
-        """Busca avaliações do livro no banco de dados"""
         session = SessionLocal()
         try:
             avaliacoes = session.query(Avaliacao).join(User).filter(
@@ -49,8 +48,6 @@ class BookService:
             ).order_by(Avaliacao.data_avaliacao.desc()).all()
 
             return [{
-                'id': str(av.id),
-                'usuario_id': str(av.usuario_id),
                 'usuario_nome': av.usuario.username,
                 'estrelas': av.estrelas,
                 'comentario': av.comentario,
@@ -90,14 +87,13 @@ class BookService:
         if response.status_code != 200:
             raise Exception("Erro ao consultar a API do Google Books.")
 
-        # Formatar dados do livro (sem avaliações)
         book_data = BookService._format_book(response.json())
 
-        # Buscar avaliações separadamente
         avaliacoes = BookService._get_avaliacoes(book_id)
 
-        # Retornar livro e avaliações separados
-        return {
-            "book": book_data,
-            "avaliacoes": avaliacoes
-        }
+        from collections import OrderedDict
+        result = OrderedDict()
+        result['book'] = book_data
+        result['avaliacoes'] = avaliacoes
+
+        return result
