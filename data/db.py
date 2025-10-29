@@ -28,7 +28,7 @@ class Livro(Base):
     id = Column(Integer, primary_key=True)
     google_books_id = Column(String(50), unique=True, nullable=False, index=True)
     rate = Column(Integer,nullable=False,index=True)
-    usuario_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     # Relacionamento com avaliações
     
     
@@ -44,7 +44,7 @@ class Avaliacao(Base):
     
     id = Column(Integer, primary_key=True)
     livro_id = Column(Integer, ForeignKey('livros.id'), nullable=False, index=True)
-    usuario_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False, index=True)
     estrelas = Column(Integer, nullable=False)
     comentario = Column(Text)
     data_avaliacao = Column(TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'))

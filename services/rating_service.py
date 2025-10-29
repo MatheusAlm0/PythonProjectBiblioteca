@@ -60,7 +60,7 @@ class RatingService:
             print(f"Erro ao buscar/criar livro: {e}")
             return None
     
-    def adicionar_avaliacao(self, google_books_id: str, usuario_id: int, 
+    def adicionar_avaliacao(self, google_books_id: str, usuario_id: int,
                            estrelas: int, comentario: Optional[str] = None) -> bool:
         """
         Adiciona ou atualiza uma avaliação

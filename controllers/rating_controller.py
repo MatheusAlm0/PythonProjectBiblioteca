@@ -76,7 +76,7 @@ def remover_avaliacao(google_books_id):
     service = get_rating_service()
     try:
         usuario_id = request.args.get('usuario_id', type=int)
-        
+
         if not usuario_id:
             raise BadRequestException("O parâmetro 'usuario_id' é obrigatório.")
         
@@ -148,7 +148,7 @@ def verificar_avaliacao(google_books_id):
     service = get_rating_service()
     try:
         usuario_id = request.args.get('usuario_id', type=int)
-        
+
         if not usuario_id:
             raise BadRequestException("O parâmetro 'usuario_id' é obrigatório.")
         
