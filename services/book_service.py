@@ -62,7 +62,7 @@ class BookService:
     @staticmethod
     def search_books(query):
         if not query or not query.strip():
-            raise BadRequestException("O campo 'findBook' é obrigatório e não pode estar vazio.")
+            raise BadRequestException("Livro não encontrado.")
 
         response = requests.get(
             BookService.GOOGLE_BOOKS_API_URL,
@@ -85,7 +85,7 @@ class BookService:
         if response.status_code == 404:
             raise BadRequestException("Livro não encontrado.")
         if response.status_code != 200:
-            raise Exception("Erro ao consultar a API do Google Books.")
+            raise BadRequestException("Livro não encontrado.")
 
         book_data = BookService._format_book(response.json())
 

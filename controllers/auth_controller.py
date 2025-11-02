@@ -13,7 +13,7 @@ def register():
     email = data.get('email')
 
     if not username or not password or not email:
-        return jsonify({'error': 'username, email e password são obrigatórios'}), 400
+        return jsonify({'error': 'Nome, email e senha são obrigatórios'}), 400
 
     session = SessionLocal()
     try:
@@ -23,7 +23,7 @@ def register():
 
         if existing:
             if existing.username == username:
-                return jsonify({'error': 'usuário já existe'}), 400
+                return jsonify({'error': 'Usuário já cadastrado'}), 400
             else:
                 return jsonify({'error': 'email já cadastrado'}), 400
 
@@ -51,7 +51,7 @@ def login():
     password = data.get('password')
 
     if not username_or_email or not password:
-        return jsonify({'error': 'username/email e password são obrigatórios'}), 400
+        return jsonify({'error': 'Email e senha são obrigatórios'}), 400
 
     session = SessionLocal()
     try:
@@ -60,7 +60,7 @@ def login():
         ).first()
 
         if not user or user.password != password:
-            return jsonify({'error': 'credenciais inválidas'}), 401
+            return jsonify({'error': 'Email ou senha incorretos'}), 401
 
         user_id = str(user.id)
 
@@ -83,7 +83,7 @@ def logout():
     user_id = data.get('user_id')
 
     if not user_id:
-        return jsonify({'error': 'user_id é obrigatório'}), 400
+        return jsonify({'error': 'Parece que houve um erro ao tentar fazer logout.'}), 400
 
     logout_user(user_id)
 

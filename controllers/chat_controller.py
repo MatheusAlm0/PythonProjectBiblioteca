@@ -20,7 +20,7 @@ def chat():
 
     try:
         answer = ChatService.ask(message, api_key=api_key, model=model)
-        return jsonify({"answer": answer})
+        return jsonify(answer)
     except BadRequestException as e:
         return jsonify({"error": e.message}), 400
     except APIException as e:
