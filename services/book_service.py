@@ -64,16 +64,42 @@ class BookService:
         if not query or not query.strip():
             raise BadRequestException("Livro não encontrado.")
 
-        response = requests.get(
-            BookService.GOOGLE_BOOKS_API_URL,
-            params={"q": query, "maxResults": 10}
-        )
+        all_books = []
+        max_results_per_page = 10
+        total_pages = 4
 
-        if response.status_code != 200:
-            raise Exception("Erro ao consultar a API do Google Books.")
+        for page in range(total_pages):
+            start_index = page * max_results_per_page
+            params = {
+                "q": query,
+                "maxResults": max_results_per_page,
+                "startIndex": start_index
+            }
 
-        data = response.json()
-        return [BookService._format_book(item) for item in data.get("items", [])]
+            try:
+                response = requests.get(
+                    BookService.GOOGLE_BOOKS_API_URL,
+                    params=params,
+                    timeout=5
+                )
+
+                if response.status_code != 200:
+                    continue
+
+                data = response.json()
+                items = data.get("items", [])
+
+                if not items:
+                    break
+
+                all_books.extend(items)
+
+            except requests.exceptions.Timeout:
+                continue
+            except Exception:
+                continue
+
+        return [BookService._format_book(item) for item in all_books]
 
     @staticmethod
     def search_books_by_id(book_id):

@@ -592,30 +592,51 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     console.log('displayBooks called with:', books);
 
     if(!books || books.length === 0){
-      resultsContainer.innerHTML = '<p>Nenhum livro encontrado.</p>';
+      resultsContainer.innerHTML = `
+        <div class="no-results">
+          <div class="no-results-icon">📚</div>
+          <h3>Nenhum livro encontrado</h3>
+          <p>Tente buscar com outros termos</p>
+        </div>
+      `;
       return;
     }
 
     console.log('Exibindo', books.length, 'livros');
-    resultsContainer.innerHTML = books.map(book => {
-      const thumbnail = book.imageLinks?.thumbnail || book.thumbnail || '';
+
+    // Criar grid de cards
+    const booksHTML = books.map(book => {
+      const thumbnail = book.imageLinks?.thumbnail || book.imageLinks?.smallThumbnail || '';
       const authors = Array.isArray(book.authors) ? book.authors.join(', ') : (book.authors || 'Autor desconhecido');
+      const description = book.description || 'Sem descrição disponível';
+      const shortDescription = description.length > 120 ? description.substring(0, 120) + '...' : description;
+
+      // Extrair ano de publicação se existir
+      const publishedYear = book.publishedDate ? book.publishedDate.split('-')[0] : '';
 
       return `
         <div class="book-card" onclick="loadBookDetails('${book.id}')">
-          ${thumbnail ?
-            `<img src="${thumbnail}" alt="${book.title}" onerror="this.style.display='none'">` :
-            `<div class="book-no-image">📚 ${book.title}</div>`
-          }
+          <div class="book-thumbnail">
+            ${thumbnail ?
+              `<img src="${thumbnail}" alt="${book.title}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'book-no-cover\\'>📚</div>'">` :
+              `<div class="book-no-cover">📚</div>`
+            }
+          </div>
           <div class="book-info">
-            <h3>${book.title}</h3>
-            <p class="author">${authors}</p>
-            <p class="description">${(book.description || 'Sem descrição').substring(0, 150)}...</p>
+            <h3 class="book-title">${book.title}</h3>
+            <p class="book-author">${authors}</p>
+            ${publishedYear ? `<p class="book-year">${publishedYear}</p>` : ''}
+            <p class="book-description">${shortDescription}</p>
+            <div class="book-card-footer">
+              <span class="book-card-cta">Ver detalhes →</span>
+            </div>
           </div>
         </div>
       `;
     }).join('');
-    console.log('Livros exibidos com sucesso');
+
+    resultsContainer.innerHTML = `<div class="books-grid">${booksHTML}</div>`;
+    console.log('Livros exibidos com sucesso em grid');
   }
 
   // Carregar detalhes

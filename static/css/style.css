@@ -202,10 +202,29 @@ input:focus{outline:none;box-shadow:0 4px 12px rgba(37,99,235,0.08);border-color
 
 .no-results, .error-message {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   background: var(--card-bg);
-  border-radius: var(--radius);
-  margin: 20px 0;
+  border-radius: 16px;
+  margin: 32px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.no-results-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-results h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: #0f172a;
+}
+
+.no-results p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
 }
 
 .error-message {
@@ -216,33 +235,71 @@ input:focus{outline:none;box-shadow:0 4px 12px rgba(37,99,235,0.08);border-color
 /* Books Grid */
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+  margin-top: 32px;
+  padding: 8px;
 }
 
 .book-card {
   background: var(--card-bg);
-  border-radius: var(--radius);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #f1f5f9;
 }
 
 .book-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 28px rgba(37,99,235,0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(37,99,235,0.15);
+  border-color: #e0e7ff;
+}
+
+.book-thumbnail {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.book-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-thumbnail img {
+  transform: scale(1.05);
+}
+
+.book-no-cover {
+  font-size: 56px;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .book-no-image {
   width: 100%;
-  height: 320px;
+  height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-  font-size: 64px;
+  font-size: 52px;
   color: #9ca3af;
 }
 
@@ -269,20 +326,73 @@ input:focus{outline:none;box-shadow:0 4px 12px rgba(37,99,235,0.08);border-color
 }
 
 .book-info {
-  padding: 20px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .book-title {
-  margin: 0 0 8px;
-  font-size: 18px;
+  margin: 0 0 6px;
+  font-size: 15px;
   font-weight: 700;
   color: #0f172a;
-  line-height: 1.4;
+  line-height: 1.3;
   overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  min-height: 39px;
+}
+
+.book-author {
+  margin: 0 0 3px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.book-year {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.book-description {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  flex: 1;
+}
+
+.book-card-footer {
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: auto;
+}
+
+.book-card-cta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap 0.3s ease;
+}
+
+.book-card:hover .book-card-cta {
+  gap: 8px;
 }
 
 .book-authors {
@@ -1656,6 +1766,59 @@ input:focus{outline:none;box-shadow:0 4px 12px rgba(37,99,235,0.08);border-color
   }
   50% {
     transform: scale(1.15);
+  }
+}
+
+/* Responsividade para Books Grid */
+@media (max-width: 768px) {
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 12px;
+    padding: 4px;
+  }
+
+  .book-thumbnail {
+    height: 180px;
+  }
+
+  .book-info {
+    padding: 10px;
+  }
+
+  .book-title {
+    font-size: 13px;
+    min-height: 34px;
+  }
+
+  .book-author {
+    font-size: 11px;
+  }
+
+  .book-description {
+    font-size: 11px;
+    -webkit-line-clamp: 2;
+  }
+
+  .book-card-footer {
+    padding-top: 6px;
+  }
+
+  .book-card-cta {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
   }
 }
 
