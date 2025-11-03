@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from data.db import SessionLocal, User
-from services.session_manager import login_user, logout_user, get_logged_users
+from services.session_manager import login_user, logout_user, get_logged_users, is_logged_in
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -88,6 +88,41 @@ def logout():
     logout_user(user_id)
 
     return jsonify({'message': 'Logout realizado com sucesso'}), 200
+
+
+@auth_bp.route('/me', methods=['GET'])
+def me():
+    auth_header = request.headers.get('Authorization', '')
+    user_id = None
+
+    if auth_header.startswith('Bearer '):
+        user_id = auth_header.split(' ', 1)[1].strip()
+    elif auth_header:
+        user_id = auth_header
+    else:
+        user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({'error': 'Sessão não encontrada. Faça login novamente.'}), 401
+
+    if not is_logged_in(user_id):
+        return jsonify({'error': 'Sessão expirada. Faça login novamente.'}), 401
+
+    session = SessionLocal()
+    try:
+        user = session.query(User).filter(User.id == user_id).first()
+
+        if not user:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+
+        return jsonify({
+            'username': user.username,
+            'email': user.email,
+            'user_id': str(user.id)
+        }), 200
+
+    finally:
+        session.close()
 
 
 @auth_bp.route('/status', methods=['GET'])

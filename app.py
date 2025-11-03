@@ -32,7 +32,7 @@ app.register_blueprint(rating_bp)
 
 @app.route('/')
 def index():
-    return render_template('login.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/dashboard')

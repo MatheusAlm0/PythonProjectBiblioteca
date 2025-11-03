@@ -4,18 +4,199 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dashboard - Biblioteca</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css?v=20251103-5">
 </head>
 <body>
   <div class="container">
-    <h1>Dashboard</h1>
-    <div class="card">
-      <h2>Bem-vindo, <span id="username">...</span></h2>
-      <p id="info"></p>
-      <button id="btn-logout">Sair</button>
+    <header class="dashboard-header">
+      <h1>📚 Biblioteca Virtual</h1>
+      <div class="header-actions">
+        <button id="btn-favorites" class="btn-favorites" style="display: none;">❤️ Meus Favoritos</button>
+        <button id="btn-ratings" class="btn-ratings" style="display: none;">⭐ Minhas Avaliações</button>
+        <div class="user-info" id="user-info" style="display: none;">
+          <span>Olá, <strong id="username">...</strong></span>
+          <button id="btn-logout" class="btn-logout">Sair</button>
+        </div>
+        <button id="btn-login" class="btn-primary" style="display: block;">Login / Registrar</button>
+      </div>
+    </header>
+
+    <!-- Seção de Busca -->
+    <section id="search-section" class="search-section">
+      <div class="search-box">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Digite o nome do livro que deseja buscar..."
+          autocomplete="off"
+        >
+        <button id="btn-search" class="btn-primary">🔍 Buscar</button>
+      </div>
+    </section>
+
+    <!-- Seção de Resultados -->
+    <section id="results-section" class="results-section">
+      <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Buscando livros...</p>
+      </div>
+
+      <div id="results-container" class="results-container">
+        <div class="welcome-message">
+          <h2>🔍 Pesquise por seus livros favoritos</h2>
+          <p>Use a barra de busca acima para encontrar livros na API do Google Books</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Modal de Detalhes do Livro -->
+    <div id="book-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div id="book-details" class="book-details">
+          <!-- Conteúdo será preenchido dinamicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Autenticação -->
+    <div id="auth-modal" class="modal" style="display: none;">
+      <div class="modal-content auth-modal-content">
+        <span class="close-modal auth-close">&times;</span>
+
+        <!-- Formulário de Login -->
+        <div id="login-form-container" style="display: block;">
+          <h2>🔐 Login</h2>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-username">Usuário ou Email:</label>
+              <input type="text" id="login-username" required>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Senha:</label>
+              <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="btn-primary">Entrar</button>
+          </form>
+          <p class="auth-switch">
+            Não tem conta? <a href="javascript:void(0)" onclick="switchToRegister()">Cadastre-se</a>
+          </p>
+        </div>
+
+        <!-- Formulário de Registro -->
+        <div id="register-form-container" style="display: none;">
+          <h2>📝 Cadastro</h2>
+          <form id="register-form">
+            <div class="form-group">
+              <label for="register-username">Usuário:</label>
+              <input type="text" id="register-username" required>
+            </div>
+            <div class="form-group">
+              <label for="register-email">Email:</label>
+              <input type="email" id="register-email" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Senha:</label>
+              <input type="password" id="register-password" required>
+            </div>
+            <button type="submit" class="btn-primary">Cadastrar</button>
+          </form>
+          <p class="auth-switch">
+            Já tem conta? <a href="javascript:void(0)" onclick="switchToLogin()">Faça login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Favoritos -->
+    <div id="favorites-modal" class="modal" style="display: none;">
+      <div class="modal-content favorites-modal-content">
+        <span class="close-modal favorites-close">&times;</span>
+        <h2>❤️ Meus Livros Favoritos</h2>
+        <div id="favorites-content" class="favorites-list">
+          <!-- Conteúdo será preenchido dinamicamente -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Minhas Avaliações -->
+    <div id="ratings-modal" class="modal" style="display: none;">
+      <div class="modal-content ratings-modal-content">
+        <span class="close-modal ratings-close">&times;</span>
+        <h2>⭐ Minhas Avaliações</h2>
+        <div id="ratings-list" class="ratings-list">
+          <!-- Conteúdo será preenchido dinamicamente -->
+        </div>
+      </div>
     </div>
   </div>
-  <script src="/static/js/dashboard.js"></script>
+
+  <!-- Modal de Avaliação -->
+  <div id="rating-modal" class="modal" style="display: none;">
+    <div class="modal-content rating-modal-content">
+      <span class="close-modal rating-close" id="close-rating-modal">&times;</span>
+
+      <div class="rating-modal-header">
+        <div class="rating-icon">⭐</div>
+        <h2>Avaliar Livro</h2>
+        <p class="rating-subtitle">Compartilhe sua opinião sobre este livro</p>
+      </div>
+
+      <div class="rating-section">
+        <label class="rating-label">Sua avaliação:</label>
+        <div class="star-rating-container">
+          <div class="star-rating">
+            <span class="star" data-rating="1">☆</span>
+            <span class="star" data-rating="2">☆</span>
+            <span class="star" data-rating="3">☆</span>
+            <span class="star" data-rating="4">☆</span>
+            <span class="star" data-rating="5">☆</span>
+          </div>
+          <div class="rating-text" id="rating-text">Selecione uma nota</div>
+        </div>
+      </div>
+
+      <div class="comment-section">
+        <label class="rating-label" for="rating-comment">
+          Seu comentário (opcional):
+          <span class="char-counter"><span id="char-count">0</span>/500</span>
+        </label>
+        <textarea
+          id="rating-comment"
+          placeholder="O que você achou deste livro? Conte mais sobre sua experiência de leitura..."
+          maxlength="500"
+          rows="4"
+        ></textarea>
+      </div>
+
+      <div class="rating-actions">
+        <button id="cancel-rating" class="btn-secondary-rating">Cancelar</button>
+        <button id="submit-rating" class="btn-primary-rating">
+          <span class="btn-icon">✓</span>
+          Enviar Avaliação
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Notificações Toast -->
+  <div id="toast-container" class="toast-container" style="position: fixed !important; top: 20px !important; right: 20px !important; z-index: 99999 !important;"></div>
+
+  <!-- Modal de Confirmação -->
+  <div id="confirm-modal" class="modal confirm-modal" style="display: none; backdrop-filter: blur(4px);">
+    <div class="modal-content confirm-modal-content" style="max-width: 480px; text-align: center; padding: 0; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); border-radius: 16px;">
+      <div class="confirm-icon" style="font-size: 80px; margin: 40px 0 24px; filter: drop-shadow(0 4px 12px rgba(239, 68, 68, 0.3));">⚠️</div>
+      <h2 id="confirm-title" style="margin: 0 0 12px 0; padding: 0 32px; font-size: 26px; color: #0f172a; font-weight: 700; letter-spacing: -0.5px;">Confirmar ação</h2>
+      <p id="confirm-message" style="margin: 0 0 32px 0; padding: 0 32px; color: #475569; font-size: 15px; line-height: 1.6;">Tem certeza que deseja continuar?</p>
+      <div class="confirm-buttons" style="display: flex; gap: 0; justify-content: stretch; border-top: 1px solid #e2e8f0; background: #f8fafc;">
+        <button id="confirm-cancel" class="btn-cancel" style="flex: 1; padding: 16px 24px; border-radius: 0; border: none; cursor: pointer; font-weight: 600; font-size: 15px; background: #ffffff; color: #64748b; border-right: 1px solid #e2e8f0; transition: all 0.3s ease;">Cancelar</button>
+        <button id="confirm-ok" class="btn-danger" style="flex: 1; padding: 16px 24px; border-radius: 0; border: none; cursor: pointer; font-weight: 600; font-size: 15px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/dashboard.js?v=20251103-8"></script>
 </body>
 </html>
 

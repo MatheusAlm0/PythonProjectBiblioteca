@@ -1,0 +1,7 @@
+<svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="300" fill="#e5e7eb"/>
+  <text x="100" y="140" font-family="Arial, sans-serif" font-size="24" fill="#9ca3af" text-anchor="middle">📚</text>
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af" text-anchor="middle">Sem capa</text>
+  <text x="100" y="190" font-family="Arial, sans-serif" font-size="14" fill="#9ca3af" text-anchor="middle">disponível</text>
+</svg>
+

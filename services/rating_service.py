@@ -127,6 +127,24 @@ class RatingService:
         except Exception as e:
             raise Exception(f"Erro ao obter avaliações: {str(e)}")
 
+    def obter_avaliacoes_usuario(self, usuario_id: str) -> List[Dict]:
+        """Obter todas as avaliações de um usuário específico"""
+        try:
+            avaliacoes = self.db.query(Avaliacao).filter(
+                Avaliacao.usuario_id == usuario_id
+            ).order_by(Avaliacao.data_avaliacao.desc()).all()
+
+            return [{
+                'id': str(av.id),
+                'google_books_id': av.google_books_id,
+                'estrelas': av.estrelas,
+                'comentario': av.comentario,
+                'data_avaliacao': av.data_avaliacao.isoformat() if av.data_avaliacao else None
+            } for av in avaliacoes]
+
+        except Exception as e:
+            raise Exception(f"Erro ao obter avaliações do usuário: {str(e)}")
+
     def usuario_ja_avaliou(self, google_books_id: str, usuario_id: str) -> Dict:
         try:
             avaliacao = self.db.query(Avaliacao).filter_by(

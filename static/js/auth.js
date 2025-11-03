@@ -75,9 +75,9 @@ q('btn-register').addEventListener('click', async ()=>{
           body: JSON.stringify({username, password})
         });
         const loginData = await loginRes.json();
-        if(loginRes.ok && loginData.token){
-          localStorage.setItem('auth_token', loginData.token);
-          // redirecionar para dashboard após breve pausa
+        if(loginRes.ok && loginData.user_id){
+          localStorage.setItem('user_id', loginData.user_id);
+          localStorage.setItem('username', loginData.username);
           setResult('reg-result', 'Entrando... Redirecionando.', 'success');
           setTimeout(()=> window.location.href = '/dashboard', 500);
           return;
@@ -109,7 +109,11 @@ q('btn-login').addEventListener('click', async ()=>{
   const password = q('login-password').value;
   setResult('login-result', '', null);
 
-  // Não validar formato de usuário/ email aqui rigidamente; backend decide
+  // Validação
+  if(!usernameOrEmail){
+    setResult('login-result', 'Informe usuário ou email', 'error');
+    return;
+  }
   const pErr = validatePassword(password);
   if(pErr){ setResult('login-result', pErr, 'error'); return }
 
@@ -122,36 +126,51 @@ q('btn-login').addEventListener('click', async ()=>{
       body: JSON.stringify({username: usernameOrEmail, password})
     });
     const data = await res.json();
-    if(res.ok && data.token){
-      localStorage.setItem('auth_token', data.token);
+
+    console.log('Login response:', res.status, data);
+
+    if(res.ok && data.user_id){
+      localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('username', data.username);
+      console.log('Salvou user_id:', data.user_id);
       setResult('login-result', 'Login realizado. Redirecionando...', 'success');
-      // redirecionar para dashboard
       setTimeout(()=> window.location.href = '/dashboard', 600);
     }else{
       const msg = data.error || 'Falha no login';
       setResult('login-result', msg, 'error');
-      // manter alerta para erros de autenticação do servidor (visibilidade)
       alert(msg);
     }
-  }catch(e){setResult('login-result', 'Erro ao conectar: '+e.message, 'error'); alert('Erro ao conectar: '+e.message)}
+  }catch(e){
+    console.error('Erro login:', e);
+    setResult('login-result', 'Erro ao conectar: '+e.message, 'error');
+    alert('Erro ao conectar: '+e.message);
+  }
   finally{ setButtonState(btn, false); }
 });
 
-// Quick account check
-q('btn-me').addEventListener('click', async ()=>{
-  const token = localStorage.getItem('auth_token');
-  setResult('me-result', '', null);
-  setResult('me-result', 'Consultando...', null);
-  if(!token){ setResult('me-result', 'Nenhum token. Faça login.', 'error'); return }
-  try{
-    const res = await fetch('/auth/me', { headers: { 'Authorization': 'Bearer '+token }});
-    const data = await res.json();
-    setResult('me-result', res.ok ? ('Logado como '+data.username) : (data.error || JSON.stringify(data)), res.ok ? 'success' : 'error');
-    if(!res.ok){ alert(data.error || 'Token inválido'); }
-  }catch(e){ setResult('me-result', 'Erro: '+e.message, 'error'); alert('Erro: '+e.message) }
-});
+// Quick account check (se botão existir)
+const btnMe = q('btn-me');
+if(btnMe){
+  btnMe.addEventListener('click', async ()=>{
+    const userId = localStorage.getItem('user_id');
+    setResult('me-result', '', null);
+    setResult('me-result', 'Consultando...', null);
+    if(!userId){ setResult('me-result', 'Nenhuma sessão. Faça login.', 'error'); return }
+    try{
+      const res = await fetch('/auth/me', { headers: { 'Authorization': 'Bearer '+userId }});
+      const data = await res.json();
+      setResult('me-result', res.ok ? ('Logado como '+data.username) : (data.error || JSON.stringify(data)), res.ok ? 'success' : 'error');
+      if(!res.ok){ alert(data.error || 'Sessão inválida'); }
+    }catch(e){ setResult('me-result', 'Erro: '+e.message, 'error'); alert('Erro: '+e.message) }
+  });
+}
 
-q('btn-logout').addEventListener('click', ()=>{
-  localStorage.removeItem('auth_token');
-  setResult('me-result', 'Logout realizado.', null);
-});
+const btnLogout = q('btn-logout');
+if(btnLogout){
+  btnLogout.addEventListener('click', ()=>{
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('username');
+    setResult('me-result', 'Logout realizado.', null);
+    window.location.href = '/';
+  });
+}

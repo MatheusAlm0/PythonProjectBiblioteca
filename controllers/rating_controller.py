@@ -98,6 +98,29 @@ def remover_avaliacao(google_books_id):
         service.db.close()
 
 
+@rating_bp.route('/api/ratings/user/<user_id>', methods=['GET'])
+def listar_avaliacoes_usuario(user_id):
+    """Lista todas as avaliações de um usuário"""
+    service = get_rating_service()
+    try:
+        auth_error = check_logged_in(user_id)
+        if auth_error:
+            return auth_error
+
+        avaliacoes = service.obter_avaliacoes_usuario(user_id)
+
+        return jsonify({
+            "user_id": user_id,
+            "ratings": avaliacoes,
+            "total": len(avaliacoes)
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        service.db.close()
+
+
 @rating_bp.route('/api/ratings/<google_books_id>/stats', methods=['GET'])
 def obter_estatisticas(google_books_id):
     service = get_rating_service()
