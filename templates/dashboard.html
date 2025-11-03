@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Dashboard - Biblioteca</title>
-  <link rel="stylesheet" href="/static/css/style.css?v=20251103-9">
+  <link rel="stylesheet" href="/static/css/style.css?v=20251103-15">
 </head>
 <body>
   <div class="container">
@@ -196,7 +196,52 @@
     </div>
   </div>
 
-  <script src="/static/js/dashboard.js?v=20251103-8"></script>
+  <!-- Botão Flutuante do Chatbot -->
+  <button id="chatbot-btn" class="chatbot-float-btn" title="Assistente de Livros" style="position: fixed !important; bottom: 30px !important; right: 30px !important; width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5), 0 4px 12px rgba(0, 0, 0, 0.15); cursor: pointer; z-index: 100000 !important; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; padding: 0; outline: none;">
+    <span class="chatbot-icon" style="font-size: 36px; line-height: 1;">🤖</span>
+  </button>
+
+  <!-- Modal do Chatbot -->
+  <div id="chatbot-modal" class="chatbot-modal" style="display: none; position: fixed; bottom: 24px; right: 24px; z-index: 99999 !important;">
+    <div class="chatbot-container" style="width: 380px; height: 600px; background: white; border-radius: 16px; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; overflow: hidden;">
+      <div class="chatbot-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="chatbot-header-info" style="display: flex; align-items: center; gap: 12px;">
+          <div class="chatbot-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 24px;">🤖</div>
+          <div>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Assistente de Livros</h3>
+            <p class="chatbot-status" style="margin: 2px 0 0; font-size: 12px; opacity: 0.9;">Online</p>
+          </div>
+        </div>
+        <button class="chatbot-close" id="chatbot-close" style="background: none; border: none; color: white; font-size: 32px; cursor: pointer; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.2s;">×</button>
+      </div>
+
+      <div class="chatbot-messages" id="chatbot-messages" style="flex: 1; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px;">
+        <div class="chatbot-message bot" style="display: flex; gap: 10px; align-items: flex-start;">
+          <div class="message-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🤖</div>
+          <div class="message-content" style="max-width: 70%; display: flex; flex-direction: column; gap: 4px;">
+            <p style="margin: 0; padding: 12px 16px; border-radius: 12px; background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); font-size: 14px; line-height: 1.5; color: #1e293b;">Olá! 👋 Sou seu assistente virtual de livros. Como posso ajudá-lo hoje?</p>
+            <span class="message-time" style="font-size: 11px; color: #94a3b8; padding: 0 4px;">Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chatbot-input-area" style="padding: 16px; background: white; border-top: 1px solid #e2e8f0; display: flex; gap: 10px;">
+        <textarea
+          id="chatbot-input"
+          class="chatbot-input"
+          placeholder="Digite sua mensagem..."
+          rows="1"
+          style="flex: 1; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 24px; font-size: 14px; font-family: inherit; resize: none; max-height: 100px; transition: border-color 0.2s;"
+        ></textarea>
+        <button id="chatbot-send" class="chatbot-send-btn" style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;">
+          <span>➤</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/dashboard.js?v=20251103-14"></script>
+  <script src="/static/js/chatbot.js?v=20251103-14"></script>
 </body>
 </html>
 
