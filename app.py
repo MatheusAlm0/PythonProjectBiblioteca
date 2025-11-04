@@ -19,6 +19,11 @@ from data.db import init_db
 app = Flask(__name__)
 CORS(app)
 
+if not os.environ.get('GROQ_API_KEY'):
+
+    os.environ['GROQ_API_KEY'] = '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'
+    print("⚠️  AVISO: Configure a GROQ_API_KEY com sua chave real!")
+
 if 'HUGGINGFACE_API_KEY' in os.environ:
     print("[DEBUG] Removendo HUGGINGFACE_API_KEY do ambiente")
     del os.environ['HUGGINGFACE_API_KEY']
