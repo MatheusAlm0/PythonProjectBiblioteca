@@ -933,9 +933,18 @@ document.addEventListener('DOMContentLoaded', async ()=>{
         });
         const data = await res.json();
 
-        if(res.ok){
-          showToast('Cadastro realizado com sucesso! Faça login.', 'success');
-          btnModalLogin.click(); // Muda para o formulário de login
+        if(res.status === 201){
+          showToast('✅ Cadastro realizado com sucesso!', 'success');
+
+          // Limpar campos
+          document.getElementById('register-username').value = '';
+          document.getElementById('register-email').value = '';
+          document.getElementById('register-password').value = '';
+
+          // Mudar para formulário de login após 1.5s
+          setTimeout(() => {
+            window.switchToLogin();
+          }, 1500);
         }else{
           showToast(data.error || 'Falha no cadastro', 'error');
         }

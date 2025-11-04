@@ -40,67 +40,67 @@ function validateEmail(email){
   return null;
 }
 
-// Register
+// Register - Cadastrar e mudar para login
 q('btn-register').addEventListener('click', async ()=>{
   const username = q('reg-username').value.trim();
   const email = q('reg-email').value.trim();
   const password = q('reg-password').value;
+
+  // Limpar mensagem anterior
   setResult('reg-result', '', null);
 
+  // Validações
   const uErr = validateUsername(username);
-  const pErr = validatePassword(password);
+  if(uErr){ setResult('reg-result', uErr, 'error'); return; }
+
   const eErr = validateEmail(email);
-  if(uErr){ setResult('reg-result', uErr, 'error'); return }
-  if(eErr){ setResult('reg-result', eErr, 'error'); return }
-  if(pErr){ setResult('reg-result', pErr, 'error'); return }
+  if(eErr){ setResult('reg-result', eErr, 'error'); return; }
+
+  const pErr = validatePassword(password);
+  if(pErr){ setResult('reg-result', pErr, 'error'); return; }
 
   const btn = q('btn-register');
   setButtonState(btn, true, 'Registrando...');
+
   try{
     const res = await fetch('/auth/register', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({username, password, email})
     });
-    const data = await res.json();
-    if(res.status === 201){
-      // Registro OK -> realizar login automaticamente
-      setResult('reg-result', 'Registro realizado. Entrando...', 'success');
-      // Fazer login automático
-      try{
-        setButtonState(btn, true, 'Entrando...');
-        const loginRes = await fetch('/auth/login', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({username, password})
-        });
-        const loginData = await loginRes.json();
-        if(loginRes.ok && loginData.user_id){
-          localStorage.setItem('user_id', loginData.user_id);
-          localStorage.setItem('username', loginData.username);
-          setResult('reg-result', 'Entrando... Redirecionando.', 'success');
-          setTimeout(()=> window.location.href = '/dashboard', 500);
-          return;
-        }else{
-          const msg = loginData.error || 'Registro efetuado, mas login automático falhou.';
-          setResult('reg-result', msg, 'error');
-          alert(msg);
-        }
-      }catch(e){
-        setResult('reg-result', 'Erro no login automático: '+e.message, 'error');
-        alert('Erro no login automático: '+e.message);
-      }finally{
-        setButtonState(btn, false);
-      }
 
+    const data = await res.json();
+
+    if(res.status === 201){
+      // Cadastro realizado com sucesso!
+      setResult('reg-result', '✅ Cadastro realizado com sucesso!', 'success');
+      setButtonState(btn, false);
+
+      // Limpar campos
+      q('reg-username').value = '';
+      q('reg-email').value = '';
+      q('reg-password').value = '';
+
+      // Aguardar 1.5s e mudar para aba de login
+      setTimeout(() => {
+        setResult('reg-result', '', null);
+
+        // Mudar para aba de login
+        const loginTab = document.querySelector('.tab[data-target="#login-form"]');
+        if(loginTab) {
+          loginTab.click();
+        }
+      }, 1500);
     }else{
-      const msg = data.error || 'Falha ao registrar';
+      // Erro no registro
+      const msg = data.error || 'Falha ao registrar. Tente novamente.';
       setResult('reg-result', msg, 'error');
-      // também mostrar alerta para visibilidade
-      alert(msg);
+      setButtonState(btn, false);
     }
-  }catch(e){ setResult('reg-result', 'Erro: '+e.message, 'error'); }
-  finally{ setButtonState(btn, false); }
+  }catch(e){
+    setResult('reg-result', 'Erro de conexão: ' + e.message, 'error');
+    setButtonState(btn, false);
+  }
 });
 
 // Login
