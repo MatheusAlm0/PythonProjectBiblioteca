@@ -1,0 +1,29 @@
+/* Main CSS - Imports all modular stylesheets */
+
+/* Base styles - Variables, reset, global styles */
+@import url('base.css');
+
+/* Authentication page */
+@import url('auth.css');
+
+/* Dashboard layout */
+@import url('dashboard.css');
+
+/* Books grid and cards */
+@import url('books.css');
+
+/* Modals */
+@import url('modal.css');
+
+/* Favorites functionality */
+@import url('favorites.css');
+
+/* Ratings functionality */
+@import url('ratings.css');
+
+/* Chatbot */
+@import url('chatbot.css');
+
+/* Toast notifications */
+@import url('toast.css');
+

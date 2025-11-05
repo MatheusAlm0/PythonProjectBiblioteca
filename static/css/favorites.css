@@ -1,0 +1,206 @@
+/* Favorites Modal and Functionality */
+
+.btn-favorites {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-md);
+  margin-right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-favorites::before {
+  max-width: 1000px;
+  max-height: 85vh;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  padding: 40px;
+  background: white;
+  border-radius: var(--radius-lg);
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.1); }
+  margin-bottom: 40px;
+  color: var(--gray-900);
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.favorites-modal-content h2::after {
+  content: '';
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition);
+  width: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.favorite-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ec4899, #f43f5e);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.favorite-item:hover::before {
+  transform: scaleX(1);
+  height: 4px;
+  background: linear-gradient(90deg, #ec4899, #f43f5e);
+  border-radius: 2px;
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: #ec4899;
+}
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 28px;
+  max-width: 900px;
+  height: 220px;
+  overflow-y: auto;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.favorite-item:hover img {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+
+.favorites-modal-content h2 {
+  text-align: center;
+  margin-bottom: 32px;
+  color: #0f172a;
+  font-size: 28px;
+}
+
+.favorites-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 24px;
+}
+
+.favorite-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.favorite-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+}
+
+.favorite-item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.favorite-item-title {
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  color: #0f172a;
+  margin-bottom: 4px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.favorite-item-author {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.favorite-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.btn-remove-favorite {
+  flex: 1;
+  padding: 8px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-remove-favorite:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.no-favorites {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.no-favorites-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-favorites-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.no-favorites-subtext {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.favorites-close {
+  cursor: pointer;
+}
+

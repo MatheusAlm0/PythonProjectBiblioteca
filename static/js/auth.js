@@ -1,176 +1,282 @@
-// JS simples para registro/login usando a API /auth
-function q(id){return document.getElementById(id)}
+// auth.js - Autenticação (Login, Registro, Logout)
 
-function setResult(id, message, type){
-  const el = q(id);
-  if(!el) return;
-  el.textContent = message || '';
-  el.classList.remove('error','success');
-  if(type) el.classList.add(type);
-}
+// Modal de autenticação
+window.openAuthModal = function(mode = 'login'){
+  const authModal = document.getElementById('auth-modal');
+  const loginForm = document.getElementById('login-form-container');
+  const registerForm = document.getElementById('register-form-container');
 
-function setButtonState(button, disabled, text){
-  if(!button) return;
-  button.disabled = !!disabled;
-  if(text !== undefined){
-    button._origText = button._origText || button.textContent;
-    button.textContent = text || button._origText;
-  }else if(button._origText){
-    button.textContent = button._origText;
+  if(mode === 'login'){
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+  }else{
+    loginForm.style.display = 'none';
+    registerForm.style.display = 'block';
   }
-  if(disabled) button.classList.add('loading'); else button.classList.remove('loading');
-}
 
-function validateUsername(username){
-  if(!username || username.trim().length === 0) return 'Informe o usuário.';
-  if(username.length < 3) return 'Usuário muito curto (mínimo 3 caracteres).';
-  return null;
-}
+  authModal.style.display = 'flex';
+};
 
-function validatePassword(password){
-  if(!password || password.length === 0) return 'Informe a senha.';
-  if(password.length < 6) return 'Senha muito curta (mínimo 6 caracteres).';
-  return null;
-}
+window.switchToRegister = function(){
+  document.getElementById('login-form-container').style.display = 'none';
+  document.getElementById('register-form-container').style.display = 'block';
+};
 
-function validateEmail(email){
-  if(!email || email.trim().length === 0) return 'Informe o email.';
-  // simples validação
-  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)) return 'Email inválido.';
-  return null;
-}
+window.switchToLogin = function(){
+  document.getElementById('register-form-container').style.display = 'none';
+  document.getElementById('login-form-container').style.display = 'block';
+};
 
-// Register - Cadastrar e mudar para login
-q('btn-register').addEventListener('click', async ()=>{
-  const username = q('reg-username').value.trim();
-  const email = q('reg-email').value.trim();
-  const password = q('reg-password').value;
+// Configurar logout
+function setupLogoutButton(userId, username) {
+  const btnLogout = document.getElementById('btn-logout');
 
-  // Limpar mensagem anterior
-  setResult('reg-result', '', null);
+  if(btnLogout){
+    // Remover listeners antigos para evitar duplicação
+    btnLogout.replaceWith(btnLogout.cloneNode(true));
+    const newBtnLogout = document.getElementById('btn-logout');
 
-  // Validações
-  const uErr = validateUsername(username);
-  if(uErr){ setResult('reg-result', uErr, 'error'); return; }
+    newBtnLogout.addEventListener('click', async ()=>{
+      try{
+        await fetch('/auth/logout', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({user_id: userId})
+        });
+      }catch(e){
+        console.error('Erro ao fazer logout:', e);
+      }
 
-  const eErr = validateEmail(email);
-  if(eErr){ setResult('reg-result', eErr, 'error'); return; }
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('username');
+      showToast('Você saiu com sucesso!', 'info', 'Até logo!');
 
-  const pErr = validatePassword(password);
-  if(pErr){ setResult('reg-result', pErr, 'error'); return; }
+      // Atualizar interface sem recarregar
+      document.getElementById('user-info').style.display = 'none';
 
-  const btn = q('btn-register');
-  setButtonState(btn, true, 'Registrando...');
+      const btnLoginAgain = document.getElementById('btn-login');
+      if(btnLoginAgain) btnLoginAgain.style.display = 'block';
 
-  try{
-    const res = await fetch('/auth/register', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username, password, email})
+      const btnFavoritesAgain = document.getElementById('btn-favorites');
+      if(btnFavoritesAgain) btnFavoritesAgain.style.display = 'none';
+
+      const btnRatingsAgain = document.getElementById('btn-ratings');
+      if(btnRatingsAgain) btnRatingsAgain.style.display = 'none';
     });
+  }
+}
 
-    const data = await res.json();
+// Atualizar interface após login
+function updateUIAfterLogin(userId, username) {
+  // Atualizar interface sem recarregar
+  document.getElementById('username').textContent = username;
+  document.getElementById('user-info').style.display = 'flex';
 
-    if(res.status === 201){
-      // Cadastro realizado com sucesso!
-      setResult('reg-result', '✅ Cadastro realizado com sucesso!', 'success');
-      setButtonState(btn, false);
+  const btnLogin = document.getElementById('btn-login');
+  if(btnLogin) btnLogin.style.display = 'none';
 
-      // Limpar campos
-      q('reg-username').value = '';
-      q('reg-email').value = '';
-      q('reg-password').value = '';
+  const btnFavorites = document.getElementById('btn-favorites');
+  if(btnFavorites) {
+    btnFavorites.style.display = 'block';
+    // Adicionar event listener para favoritos
+    btnFavorites.replaceWith(btnFavorites.cloneNode(true));
+    const newBtnFavorites = document.getElementById('btn-favorites');
+    newBtnFavorites.addEventListener('click', () => window.showFavorites());
+  }
 
-      // Aguardar 1.5s e mudar para aba de login
-      setTimeout(() => {
-        setResult('reg-result', '', null);
+  const btnRatings = document.getElementById('btn-ratings');
+  if(btnRatings) {
+    btnRatings.style.display = 'block';
+    // Adicionar event listener para avaliações
+    btnRatings.replaceWith(btnRatings.cloneNode(true));
+    const newBtnRatings = document.getElementById('btn-ratings');
+    newBtnRatings.addEventListener('click', () => window.showRatings());
+  }
 
-        // Mudar para aba de login
-        const loginTab = document.querySelector('.tab[data-target="#login-form"]');
-        if(loginTab) {
-          loginTab.click();
+  // Configurar botão de logout
+  setupLogoutButton(userId, username);
+}
+
+// Inicializar formulários de autenticação
+export function initAuthForms() {
+  // Login
+  const loginForm = document.getElementById('login-form');
+  if(loginForm){
+    loginForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      try{
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({username, password})
+        });
+        const data = await res.json();
+
+        if(res.ok){
+          localStorage.setItem('user_id', data.user_id);
+          localStorage.setItem('username', data.username);
+          showToast(`Bem-vindo(a), ${data.username}!`, 'success', 'Login realizado!');
+
+          // Fechar modal
+          const authModal = document.getElementById('auth-modal');
+          if(authModal) authModal.style.display = 'none';
+
+          updateUIAfterLogin(data.user_id, data.username);
+
+          // Limpar campos do formulário
+          document.getElementById('login-username').value = '';
+          document.getElementById('login-password').value = '';
+        }else{
+          showToast(data.error || 'Falha no login', 'error');
         }
-      }, 1500);
-    }else{
-      // Erro no registro
-      const msg = data.error || 'Falha ao registrar. Tente novamente.';
-      setResult('reg-result', msg, 'error');
-      setButtonState(btn, false);
-    }
-  }catch(e){
-    setResult('reg-result', 'Erro de conexão: ' + e.message, 'error');
-    setButtonState(btn, false);
-  }
-});
-
-// Login
-q('btn-login').addEventListener('click', async ()=>{
-  const usernameOrEmail = q('login-username').value.trim();
-  const password = q('login-password').value;
-  setResult('login-result', '', null);
-
-  // Validação
-  if(!usernameOrEmail){
-    setResult('login-result', 'Informe usuário ou email', 'error');
-    return;
-  }
-  const pErr = validatePassword(password);
-  if(pErr){ setResult('login-result', pErr, 'error'); return }
-
-  const btn = q('btn-login');
-  setButtonState(btn, true, 'Entrando...');
-  try{
-    const res = await fetch('/auth/login', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({username: usernameOrEmail, password})
+      }catch(e){
+        showToast('Erro: ' + e.message, 'error');
+      }
     });
-    const data = await res.json();
-
-    console.log('Login response:', res.status, data);
-
-    if(res.ok && data.user_id){
-      localStorage.setItem('user_id', data.user_id);
-      localStorage.setItem('username', data.username);
-      console.log('Salvou user_id:', data.user_id);
-      setResult('login-result', 'Login realizado. Redirecionando...', 'success');
-      setTimeout(()=> window.location.href = '/dashboard', 600);
-    }else{
-      const msg = data.error || 'Falha no login';
-      setResult('login-result', msg, 'error');
-      alert(msg);
-    }
-  }catch(e){
-    console.error('Erro login:', e);
-    setResult('login-result', 'Erro ao conectar: '+e.message, 'error');
-    alert('Erro ao conectar: '+e.message);
   }
-  finally{ setButtonState(btn, false); }
-});
 
-// Quick account check (se botão existir)
-const btnMe = q('btn-me');
-if(btnMe){
-  btnMe.addEventListener('click', async ()=>{
-    const userId = localStorage.getItem('user_id');
-    setResult('me-result', '', null);
-    setResult('me-result', 'Consultando...', null);
-    if(!userId){ setResult('me-result', 'Nenhuma sessão. Faça login.', 'error'); return }
+  // Registro
+  const registerForm = document.getElementById('register-form');
+  if(registerForm){
+    registerForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const username = document.getElementById('register-username').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+
+      try{
+        const res = await fetch('/auth/register', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({username, email, password})
+        });
+        const data = await res.json();
+
+        if(res.status === 201){
+          showToast('✅ Cadastro realizado com sucesso!', 'success');
+
+          // Limpar campos
+          document.getElementById('register-username').value = '';
+          document.getElementById('register-email').value = '';
+          document.getElementById('register-password').value = '';
+
+          // Mudar para formulário de login após 1.5s
+          setTimeout(() => {
+            window.switchToLogin();
+          }, 1500);
+        }else{
+          showToast(data.error || 'Falha no cadastro', 'error');
+        }
+      }catch(e){
+        showToast('Erro: ' + e.message, 'error');
+      }
+    });
+  }
+
+  // Fechar modal de autenticação
+  const authModal = document.getElementById('auth-modal');
+  const authClose = document.querySelector('.auth-close');
+
+  if(authClose){
+    authClose.addEventListener('click', ()=> authModal.style.display = 'none');
+  }
+}
+
+// Verificar se usuário está logado
+export async function checkAuth() {
+  const userId = localStorage.getItem('user_id');
+  let isLoggedIn = false;
+  let username = '';
+
+  if(userId){
     try{
-      const res = await fetch('/auth/me', { headers: { 'Authorization': 'Bearer '+userId }});
+      const res = await fetch('/auth/me', {
+        headers: { 'Authorization': 'Bearer ' + userId }
+      });
       const data = await res.json();
-      setResult('me-result', res.ok ? ('Logado como '+data.username) : (data.error || JSON.stringify(data)), res.ok ? 'success' : 'error');
-      if(!res.ok){ alert(data.error || 'Sessão inválida'); }
-    }catch(e){ setResult('me-result', 'Erro: '+e.message, 'error'); alert('Erro: '+e.message) }
-  });
+
+      if(res.ok){
+        isLoggedIn = true;
+        username = data.username || 'Usuário';
+        document.getElementById('username').textContent = username;
+      }else{
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('username');
+      }
+    }catch(e){
+      console.error('Erro ao validar sessão:', e);
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('username');
+    }
+  }
+
+  return { isLoggedIn, username, userId };
 }
 
-const btnLogout = q('btn-logout');
-if(btnLogout){
-  btnLogout.addEventListener('click', ()=>{
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('username');
-    setResult('me-result', 'Logout realizado.', null);
-    window.location.href = '/';
-  });
+// Configurar botões de login/logout e favoritos/avaliações
+export function setupAuthButtons(isLoggedIn, userId, username) {
+  const btnLogout = document.getElementById('btn-logout');
+  const btnLogin = document.getElementById('btn-login');
+  const btnFavoritesHeader = document.getElementById('btn-favorites');
+  const btnRatingsHeader = document.getElementById('btn-ratings');
+
+  if(isLoggedIn){
+    // Mostrar nome do usuário, botão de sair, favoritos e avaliações
+    document.getElementById('user-info').style.display = 'flex';
+    if(btnLogin) btnLogin.style.display = 'none';
+
+    if(btnFavoritesHeader) {
+      btnFavoritesHeader.style.display = 'block';
+      btnFavoritesHeader.addEventListener('click', () => window.showFavorites());
+    }
+
+    if(btnRatingsHeader) {
+      btnRatingsHeader.style.display = 'block';
+      btnRatingsHeader.addEventListener('click', () => window.showRatings());
+    }
+
+    if(btnLogout){
+      btnLogout.addEventListener('click', async ()=>{
+        try{
+          await fetch('/auth/logout', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({user_id: userId})
+          });
+        }catch(e){
+          console.error('Erro ao fazer logout:', e);
+        }
+
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('username');
+        showToast('Você saiu com sucesso!', 'info', 'Até logo!');
+
+        // Atualizar interface sem recarregar
+        document.getElementById('user-info').style.display = 'none';
+
+        const btnLogin = document.getElementById('btn-login');
+        if(btnLogin) btnLogin.style.display = 'block';
+
+        const btnFavorites = document.getElementById('btn-favorites');
+        if(btnFavorites) btnFavorites.style.display = 'none';
+
+        const btnRatings = document.getElementById('btn-ratings');
+        if(btnRatings) btnRatings.style.display = 'none';
+      });
+    }
+  }else{
+    // Mostrar botão de login e ocultar favoritos e avaliações
+    document.getElementById('user-info').style.display = 'none';
+    if(btnFavoritesHeader) btnFavoritesHeader.style.display = 'none';
+    if(btnRatingsHeader) btnRatingsHeader.style.display = 'none';
+
+    if(btnLogin){
+      btnLogin.style.display = 'block';
+      btnLogin.addEventListener('click', ()=> window.openAuthModal());
+    }
+  }
 }
+
