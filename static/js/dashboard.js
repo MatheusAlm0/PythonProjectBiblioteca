@@ -470,7 +470,18 @@ document.addEventListener('DOMContentLoaded', async ()=>{
         localStorage.removeItem('user_id');
         localStorage.removeItem('username');
         showToast('Você saiu com sucesso!', 'info', 'Até logo!');
-        setTimeout(() => location.reload(), 1000);
+
+        // Atualizar interface sem recarregar
+        document.getElementById('user-info').style.display = 'none';
+
+        const btnLogin = document.getElementById('btn-login');
+        if(btnLogin) btnLogin.style.display = 'block';
+
+        const btnFavorites = document.getElementById('btn-favorites');
+        if(btnFavorites) btnFavorites.style.display = 'none';
+
+        const btnRatings = document.getElementById('btn-ratings');
+        if(btnRatings) btnRatings.style.display = 'none';
       });
     }
   }else{
@@ -775,17 +786,21 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   // Adicionar aos favoritos
   window.addToFavorites = async function(bookId){
-    if(!isLoggedIn){
+    // Verificar login sempre do localStorage (valor atual)
+    const currentUserId = localStorage.getItem('user_id');
+
+    if(!currentUserId){
       showToast('Faça login para adicionar livros aos favoritos', 'warning', 'Login necessário');
-      setTimeout(() => openAuthModal('login'), 500);
+      setTimeout(() => window.openAuthModal('login'), 500);
       return;
     }
+
     try{
-      const res = await fetch(`/api/users/${userId}/favorites`, {
+      const res = await fetch(`/api/users/${currentUserId}/favorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + userId
+          'Authorization': 'Bearer ' + currentUserId
         },
         body: JSON.stringify({ book_id: bookId })
       });
@@ -799,15 +814,18 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   // Avaliar livro
   window.rateBook = async function(bookId){
-    if(!isLoggedIn){
+    // Verificar login sempre do localStorage (valor atual)
+    const currentUserId = localStorage.getItem('user_id');
+
+    if(!currentUserId){
       showToast('Faça login para avaliar livros', 'warning', 'Login necessário');
-      setTimeout(() => openAuthModal('login'), 500);
+      setTimeout(() => window.openAuthModal('login'), 500);
       return;
     }
 
     // Verificar se o usuário já avaliou este livro
     try {
-      const res = await fetch(`/api/ratings/${bookId}/check?user_id=${userId}`);
+      const res = await fetch(`/api/ratings/${bookId}/check?user_id=${currentUserId}`);
       const data = await res.json();
 
       if(res.ok && data.ja_avaliou) {
@@ -906,7 +924,74 @@ document.addEventListener('DOMContentLoaded', async ()=>{
           localStorage.setItem('user_id', data.user_id);
           localStorage.setItem('username', data.username);
           showToast(`Bem-vindo(a), ${data.username}!`, 'success', 'Login realizado!');
-          setTimeout(() => location.reload(), 1000);
+
+          // Fechar modal
+          const authModal = document.getElementById('auth-modal');
+          if(authModal) authModal.style.display = 'none';
+
+          // Atualizar interface sem recarregar
+          document.getElementById('username').textContent = data.username;
+          document.getElementById('user-info').style.display = 'flex';
+
+          const btnLogin = document.getElementById('btn-login');
+          if(btnLogin) btnLogin.style.display = 'none';
+
+          const btnFavorites = document.getElementById('btn-favorites');
+          if(btnFavorites) {
+            btnFavorites.style.display = 'block';
+            // Adicionar event listener para favoritos
+            btnFavorites.replaceWith(btnFavorites.cloneNode(true));
+            const newBtnFavorites = document.getElementById('btn-favorites');
+            newBtnFavorites.addEventListener('click', () => window.showFavorites());
+          }
+
+          const btnRatings = document.getElementById('btn-ratings');
+          if(btnRatings) {
+            btnRatings.style.display = 'block';
+            // Adicionar event listener para avaliações
+            btnRatings.replaceWith(btnRatings.cloneNode(true));
+            const newBtnRatings = document.getElementById('btn-ratings');
+            newBtnRatings.addEventListener('click', () => window.showRatings());
+          }
+
+          // Adicionar event listener no botão de logout
+          const btnLogout = document.getElementById('btn-logout');
+          if(btnLogout){
+            // Remover listeners antigos para evitar duplicação
+            btnLogout.replaceWith(btnLogout.cloneNode(true));
+            const newBtnLogout = document.getElementById('btn-logout');
+
+            newBtnLogout.addEventListener('click', async ()=>{
+              try{
+                await fetch('/auth/logout', {
+                  method: 'POST',
+                  headers: {'Content-Type':'application/json'},
+                  body: JSON.stringify({user_id: data.user_id})
+                });
+              }catch(e){
+                console.error('Erro ao fazer logout:', e);
+              }
+              localStorage.removeItem('user_id');
+              localStorage.removeItem('username');
+              showToast('Você saiu com sucesso!', 'info', 'Até logo!');
+
+              // Atualizar interface sem recarregar
+              document.getElementById('user-info').style.display = 'none';
+
+              const btnLoginAgain = document.getElementById('btn-login');
+              if(btnLoginAgain) btnLoginAgain.style.display = 'block';
+
+              const btnFavoritesAgain = document.getElementById('btn-favorites');
+              if(btnFavoritesAgain) btnFavoritesAgain.style.display = 'none';
+
+              const btnRatingsAgain = document.getElementById('btn-ratings');
+              if(btnRatingsAgain) btnRatingsAgain.style.display = 'none';
+            });
+          }
+
+          // Limpar campos do formulário
+          document.getElementById('login-username').value = '';
+          document.getElementById('login-password').value = '';
         }else{
           showToast(data.error || 'Falha no login', 'error');
         }
