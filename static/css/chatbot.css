@@ -75,7 +75,7 @@
 }
   border: 1px solid var(--gray-200);
 
-.chatbot-container {
+chatbot-container {
   width: 380px;
   height: 600px;
   background: white;
@@ -353,4 +353,3 @@
     font-size: 28px;
   }
 }
-
