@@ -23,7 +23,7 @@
   min-width: 320px;
   pointer-events: auto;
   animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  border-left: 5px solid #3b82f6;
+  border-left: 5px solid #6b4c3b; /* brown */
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
@@ -36,7 +36,7 @@
   bottom: 0;
   left: 0;
   height: 4px;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, #6b4c3b, #8b5a47);
   animation: progress 4s linear;
 }
 
@@ -65,11 +65,11 @@
 }
 
 .toast.toast-info {
-  border-left-color: #3b82f6;
+  border-left-color: #6b4c3b;
 }
 
 .toast.toast-info::before {
-  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  background: linear-gradient(90deg, #6b4c3b, #8b5a47);
 }
 
 .toast-icon {

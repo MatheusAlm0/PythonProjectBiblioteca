@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
 :root{
-  --brand-1: #ff8a00; /* warm accent */
-  --brand-2: #2563eb; /* primary blue */
+  --brand-1: #d6a77a; /* warm accent (beige/copper) */
+  --brand-2: #6b4c3b; /* primary brown (replaces blue) */
   --surface: #ffffff;
   --muted-2: #6b7280;
-  --card-elev: 0 10px 30px rgba(2,6,23,0.08);
+  --card-elev: 0 10px 30px rgba(11,6,3,0.06);
 }
 
 /* Global typography */
@@ -24,9 +24,9 @@ body { color: #0f172a; }
 }
 
 .btn-primary, .btn.primary {
-  background: linear-gradient(90deg, var(--brand-2) 0%, #475adf 100%);
+  background: linear-gradient(90deg, var(--brand-2) 0%, #583a2e 100%);
   color: #fff;
-  box-shadow: 0 6px 18px rgba(37,99,235,0.16);
+  box-shadow: 0 6px 18px rgba(107,76,59,0.16);
 }
 
 .btn-primary:hover, .btn.primary:hover {
@@ -37,7 +37,7 @@ body { color: #0f172a; }
 .btn.secondary, .btn-secondary {
   background: transparent;
   color: var(--brand-2);
-  border-color: rgba(37,99,235,0.12);
+  border-color: rgba(107,76,59,0.12);
 }
 
 /* Inputs */
@@ -48,8 +48,8 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-  box-shadow: 0 6px 20px rgba(37,99,235,0.12);
-  border-color: rgba(37,99,235,0.9);
+  box-shadow: 0 6px 20px rgba(107,76,59,0.12);
+  border-color: rgba(107,76,59,0.9);
 }
 
 /* Cards: subtle elevated surfaces */
@@ -62,7 +62,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Dashboard header: cleaner gradient and text treatment */
 .dashboard-header {
-  background: linear-gradient(90deg, rgba(37,99,235,0.95), rgba(71,90,223,0.95));
+  background: linear-gradient(90deg, rgba(107,76,59,0.95), rgba(88,58,46,0.95));
   color: #fff;
 }
 
@@ -73,7 +73,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Book cards hover: stronger, but keep same movement */
 .book-card:hover {
-  box-shadow: 0 30px 60px rgba(37,99,235,0.12);
+  box-shadow: 0 30px 60px rgba(107,76,59,0.12);
 }
 
 .book-thumbnail img { transition: transform 360ms ease; }
@@ -81,10 +81,10 @@ input:focus, textarea:focus, select:focus {
 
 /* Modal close button more visible */
 .close-modal { background: rgba(243,244,246,0.9); color: var(--muted-2); }
-.close-modal:hover { background: #eef2ff; color: var(--brand-2); }
+.close-modal:hover { background: #f6efe8; color: var(--brand-2); }
 
 /* Chatbot floating button: slightly more refined */
-.chatbot-float-btn { border-radius: 14px; box-shadow: 0 12px 36px rgba(102,126,234,0.28); }
+.chatbot-float-btn { border-radius: 14px; box-shadow: 0 12px 36px rgba(107,84,64,0.18); }
 .chatbot-float-btn:hover { transform: translateY(-4px) scale(1.04); }
 
 /* Toasts */
@@ -95,4 +95,3 @@ input:focus, textarea:focus, select:focus {
 
 /* Keep layout intact: avoid changing margins, paddings, grid or flex rules */
 /* End of theme.css: purely visual overrides */
-

@@ -111,7 +111,7 @@
 }
 
 .book-author::before {
-  content: '✍️';
+  content: '';
   font-size: 16px;
   font-size: 52px;
   color: #9ca3af;
@@ -131,7 +131,7 @@
   font-size: 14px;
   font-weight: 700;
 .book-year::before {
-  content: '📅';
+  content: '';
   flex-direction: column;
   gap: 6px;
   transition: var(--transition);
@@ -143,9 +143,10 @@
 }
 
 .book-card-cta::after {
-  content: '→';
+  content: '';
   font-size: 16px;
   transition: var(--transition);
+}
 
 .book-title {
   margin: 0 0 6px;

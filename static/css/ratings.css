@@ -1,40 +1,31 @@
 /* Ratings Modal and Functionality */
 
 .btn-ratings {
-  padding: 12px 28px;
-  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid white;
+  background: transparent;
   color: white;
-  border: none;
-  border-radius: var(--radius);
+  cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
   margin-right: 10px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   position: relative;
-  overflow: hidden;
-}
-
-.btn-ratings::before {
-  content: '⭐';
-  font-size: 18px;
-  animation: starRotate 3s ease-in-out infinite;
-}
-
-@keyframes starRotate {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-15deg); }
-  75% { transform: rotate(15deg); }
 }
 
 .btn-ratings:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: var(--shadow-lg);
+  background: white;
+  color: var(--primary);
 }
+
+.btn-ratings::before {
+  content: '';
+}
+
 
 /* Ratings Section */
 .ratings-section {
@@ -254,7 +245,7 @@
 .btn-edit-rating:hover {
   background: var(--primary-600);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 8px rgba(107, 76, 59, 0.3);
 }
 
 .btn-delete-rating {
@@ -300,7 +291,7 @@
 }
 
 .rating-modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   padding: 32px 24px;
   text-align: center;
   color: white;
@@ -395,7 +386,7 @@
 }
 
 .rating-text.has-rating {
-  color: #667eea;
+  color: #6b4c3b;
   transform: scale(1.05);
 }
 
@@ -420,9 +411,9 @@
 
 .comment-section textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #6b4c3b;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(107, 76, 59, 0.1);
 }
 
 .comment-section textarea::placeholder {
@@ -460,7 +451,7 @@
   flex: 2;
   padding: 12px 24px;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   color: white;
   border-radius: 10px;
   font-weight: 600;
@@ -471,12 +462,12 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 76, 59, 0.3);
 }
 
 .btn-primary-rating:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(107, 76, 59, 0.4);
 }
 
 .btn-primary-rating:active {

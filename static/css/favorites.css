@@ -1,36 +1,29 @@
 /* Favorites Modal and Functionality */
 
 .btn-favorites {
-  padding: 12px 28px;
-  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid white;
+  background: transparent;
   color: white;
-  border: none;
-  border-radius: var(--radius);
+  cursor: pointer;
   font-weight: 600;
   font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
   margin-right: 10px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   position: relative;
-  overflow: hidden;
+}
+
+.btn-favorites:hover {
+  background: white;
+  color: var(--primary);
 }
 
 .btn-favorites::before {
-  max-width: 1000px;
-  max-height: 85vh;
-  animation: heartbeat 1.5s ease-in-out infinite;
-  padding: 40px;
-  background: white;
-  border-radius: var(--radius-lg);
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  10%, 30% { transform: scale(1.1); }
+  content: '';
 }
 
 .favorites-modal-content h2::after {

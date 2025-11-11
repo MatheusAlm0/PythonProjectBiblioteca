@@ -2,15 +2,15 @@
 
 :root {
   /* Cores Principais */
-  --primary: #4f46e5; /* Indigo-600 */
-  --primary-dark: #4338ca; /* Indigo-700 */
-  --primary-light: #6366f1; /* Indigo-500 */
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
+  --primary: #6b4c3b; /* Brown-600 - replaces Indigo */
+  --primary-dark: #583a2e; /* Brown-700 */
+  --primary-light: #8b5a47; /* Brown-500 */
+  --primary-50: #faf8f6;
+  --primary-100: #f3ebe0;
 
   /* Cores Secundárias */
-  --secondary: #06b6d4; /* Cyan-500 */
-  --secondary-dark: #0891b2;
+  --secondary: #6b8b3e; /* Olive-500 - replaces Cyan */
+  --secondary-dark: #586f32;
   --accent: #f59e0b; /* Amber-500 */
   --accent-dark: #d97706;
 
@@ -21,8 +21,8 @@
   --error-light: #fee2e2;
   --warning: #f59e0b; /* Amber-500 */
   --warning-light: #fef3c7;
-  --info: #3b82f6; /* Blue-500 */
-  --info-light: #dbeafe;
+  --info: #6b4c3b; /* Brown-500 - replaces Blue */
+  --info-light: #f3ebe0;
 
   /* Tons de Cinza */
   --gray-50: #f9fafb;
@@ -37,8 +37,8 @@
   --gray-900: #111827;
 
   /* Background */
-  --bg-grad-1: #f8fafc;
-  --bg-grad-2: #eef2ff;
+  --bg-grad-1: #fbf8f4;
+  --bg-grad-2: #f3ebe0;
   --card-bg: #ffffff;
 
   /* Outros */

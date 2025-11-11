@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const timeStr = hours + ':' + minutes;
 
-    const avatar = isUser ? '👤' : '🤖';
-    const avatarBg = isUser ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-    const msgBg = isUser ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'white';
+    const avatar = isUser ? '' : '🤖';
+    const avatarBg = isUser ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%)';
+    const msgBg = isUser ? 'linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%)' : 'white';
     const msgColor = isUser ? 'white' : '#1e293b';
     const contentAlign = isUser ? 'align-items: flex-end;' : '';
 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingDiv.className = 'chatbot-message bot';
     loadingDiv.id = 'loading-message';
     loadingDiv.style.cssText = 'display: flex; gap: 10px; align-items: flex-start;';
-    loadingDiv.innerHTML = '<div class="message-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🤖</div>' +
+    loadingDiv.innerHTML = '<div class="message-avatar" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🤖</div>' +
       '<div class="message-content" style="max-width: 70%; display: flex; flex-direction: column; gap: 4px;">' +
         '<div class="message-loading" style="display: flex; gap: 4px; padding: 12px 16px;">' +
           '<span style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: bounce 1.4s infinite ease-in-out;"></span>' +

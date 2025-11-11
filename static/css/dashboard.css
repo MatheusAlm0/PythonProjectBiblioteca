@@ -5,7 +5,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 32px 40px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   color: white;
   border-radius: var(--radius-lg);
   margin-bottom: 40px;
@@ -62,7 +62,7 @@
 }
 
 .dashboard-header h1::before {
-  content: '📚';
+  content: '';
   padding: 10px 24px;
   border-radius: var(--radius);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -136,7 +136,7 @@
 
 .search-box input:focus {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 4px 12px rgba(107, 76, 59, 0.12);
 }
 
 /* Results Section */

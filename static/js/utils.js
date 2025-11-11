@@ -87,7 +87,7 @@ function showToast(message, type = 'info', title = '') {
     success: '#10b981',
     error: '#ef4444',
     warning: '#f59e0b',
-    info: '#3b82f6'
+    info: '#6b4c3b'
   };
 
   toast.style.borderLeft = `4px solid ${borderColors[type]}`;

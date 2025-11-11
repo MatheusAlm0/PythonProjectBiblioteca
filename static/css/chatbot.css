@@ -7,7 +7,7 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   border: none;
   box-shadow: var(--shadow-xl);
   cursor: pointer;
@@ -23,16 +23,16 @@
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5), 0 0 0 0 rgba(102, 126, 234, 0.7);
+    box-shadow: 0 8px 24px rgba(107, 76, 59, 0.5), 0 0 0 0 rgba(107, 76, 59, 0.7);
   }
   50% {
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5), 0 0 0 20px rgba(102, 126, 234, 0);
+    box-shadow: 0 8px 24px rgba(107, 76, 59, 0.5), 0 0 0 20px rgba(107, 76, 59, 0);
   }
 }
 
 .chatbot-float-btn:hover {
   transform: scale(1.1) translateY(-4px);
-  box-shadow: 0 20px 50px rgba(102, 126, 234, 0.7);
+  box-shadow: 0 20px 50px rgba(107, 76, 59, 0.7);
 }
 
 .chatbot-float-btn:active {
@@ -65,26 +65,26 @@
 
 @keyframes slideUp {
   from {
-  width: 420px;
-  height: 650px;
+    opacity: 0;
+    transform: translateY(20px);
   }
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
-  border: 1px solid var(--gray-200);
 
-chatbot-container {
-  width: 380px;
-  height: 600px;
+.chatbot-container {
+  width: 420px;
+  height: 650px;
   background: white;
-  padding: 24px;
+  border-radius: 16px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(107, 76, 59, 0.1);
 }
 
 .chatbot-header::before {
@@ -96,41 +96,36 @@ chatbot-container {
   height: 100%;
   background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
   animation: pulse 10s ease-in-out infinite;
-  overflow: hidden;
 }
 
 .chatbot-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  gap: 16px;
-  z-index: 1;
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   padding: 20px;
   display: flex;
   justify-content: space-between;
-  width: 50px;
-  height: 50px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
 
 .chatbot-header-info {
-  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-md);
+}
 
 .chatbot-avatar {
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
-  font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 4px 0 0;
-  font-size: 13px;
-
-  font-weight: 500;
+  font-size: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
 .chatbot-header h3 {
   margin: 0;
   font-size: 16px;
@@ -199,7 +194,7 @@ chatbot-container {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -234,7 +229,7 @@ chatbot-container {
 }
 
 .chatbot-message.user .message-content p {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   color: white;
 }
 
@@ -266,14 +261,14 @@ chatbot-container {
 
 .chatbot-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #6b4c3b;
 }
 
 .chatbot-send-btn {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b4c3b 0%, #583a2e 100%);
   border: none;
   color: white;
   font-size: 20px;
@@ -287,7 +282,7 @@ chatbot-container {
 
 .chatbot-send-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(107, 76, 59, 0.4);
 }
 
 .chatbot-send-btn:disabled {
